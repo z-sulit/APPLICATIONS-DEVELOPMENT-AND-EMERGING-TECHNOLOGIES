@@ -1,28 +1,115 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
-@import "flowbite/src/themes/minimal";
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-        <style type="text/tailwindcss">
-      @theme {
-        --color-clifford: #da373d;
-      }
-    </style>
-    <title>My Web Project (index2)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lava - A Human Exploration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
 </head>
-<body>
-    <nav>
-        <a href="#home" class="text-2xl font-bold underline text-clifford">Home</a>
-        <a href="#about" class="text-2xl font-bold underline text-clifford">About</a>
-        <a href="#services" class="text-2xl font-bold underline text-clifford">Services</a>
-        <a href="#contact" class="text-2xl font-bold underline text-clifford>Contact</a>
-    </nav>
+<body class="bg-[#242424] text-gray-200 antialiased font-sans">
 
-    <h1>Welcome to My Website</h1>
-    <p>This is the main structural layout for your landing page.</p>
+    <section class="relative bg-cover bg-center h-screen md:h-[600px]" style="background-image: url('placeholder-waves.jpg');">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-[#242424]"></div>
+        
+        <nav class="relative z-10 border-gray-200">
+            <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-8">
+                <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+                    <img src="assets/Sulit_logo (1).png" alt="Sulit Logo" class="h-36 md:h-48 w-auto object-contain" />
+                </a>
+                <button data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-400 rounded-lg md:hidden hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600">
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+                    </svg>
+                </button>
+                <div class="hidden w-full md:block md:w-auto" id="navbar-default">
+                    <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 uppercase text-sm md:text-base tracking-[0.2em] text-white items-center">
+                        <li><a href="#" class="block py-2 px-3 md:p-0 hover:text-cyan-400 transition-colors">About</a></li>
+                        <li><a href="#" class="block py-2 px-3 md:p-0 hover:text-cyan-400 transition-colors">Articles</a></li>
+                        <li><a href="#" class="block py-2 px-3 md:p-0 hover:text-cyan-400 transition-colors">Subscribe</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+<!-- Headers -->
+        <div class="relative z-10 flex flex-col justify-center h-full max-w-screen-xl mx-auto px-8 pl-16 md:pl-32 -mt-24">
+            <h1 class="text-6xl md:text-8xl font-serif text-white mb-4 tracking-wide">Zach Sulit</h1>
+            <div>
+                <p class="inline-block uppercase tracking-[0.3em] text-[#6db3c8] text-xs md:text-sm font-semibold border-b-4 border-gray-400 pb-2">Larper</p>
+    </div>
+</div>
 
+    </section>
+
+    <section class="max-w-2xl mx-auto py-24 px-6 text-center">
+        <h2 class="text-3xl md:text-4xl font-serif text-white mb-3">Slow travelling</h2>
+        <p class="uppercase tracking-widest text-[#6db3c8] text-[10px] mb-8 border-b border-[#6db3c8]/50 pb-2 inline-block">A Travel Blog</p>
+        <p class="text-gray-400 text-xs md:text-sm leading-loose tracking-wide">
+            A look through the eyes of a slow traveller. Across continents and oceans,
+            every discovery by our pace. A candid look through the human condition.
+            Explore lands untouched by tourism. Adventures into the great untamed,
+            come with me, today.
+        </p>
+    </section>
+
+    <section class="max-w-5xl mx-auto py-16 px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-serif text-white mb-3">Latest articles</h2>
+            <p class="uppercase tracking-widest text-gray-500 text-[10px] border-b border-gray-600 pb-2 inline-block">Our most recent posts</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="relative group cursor-pointer h-[450px] overflow-hidden shadow-2xl">
+                <img src="placeholder-article1.jpg" alt="Tunza" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-10 left-0 w-full text-center">
+                    <h3 class="text-white text-lg font-serif uppercase tracking-[0.2em] mb-2">Tunza</h3>
+                    <p class="text-[#6db3c8] text-[9px] uppercase tracking-widest border-b border-[#6db3c8]/50 pb-1 inline-block">Rugged Port</p>
+                </div>
+            </div>
+            
+            <div class="relative group cursor-pointer h-[450px] overflow-hidden shadow-2xl md:-mt-8">
+                <img src="placeholder-article2.jpg" alt="Timor" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-10 left-0 w-full text-center">
+                    <h3 class="text-white text-lg font-serif uppercase tracking-[0.2em] mb-2">Timor</h3>
+                    <p class="text-[#6db3c8] text-[9px] uppercase tracking-widest border-b border-[#6db3c8]/50 pb-1 inline-block">Untouched Beaches</p>
+                </div>
+            </div>
+
+            <div class="relative group cursor-pointer h-[450px] overflow-hidden shadow-2xl">
+                <img src="placeholder-article3.jpg" alt="Lombok" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-10 left-0 w-full text-center">
+                    <h3 class="text-white text-lg font-serif uppercase tracking-[0.2em] mb-2">Lombok</h3>
+                    <p class="text-[#6db3c8] text-[9px] uppercase tracking-widest border-b border-[#6db3c8]/50 pb-1 inline-block">Endless Lava</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-[#1e1e1e] py-24 mt-16 shadow-[0_-10px_40px_rgba(0,0,0,0.2)]">
+        <div class="max-w-md mx-auto px-6 text-center">
+            <h2 class="text-3xl font-serif text-white mb-3">Subscribe</h2>
+            <p class="uppercase tracking-widest text-gray-500 text-[10px] mb-10">Sign up to our newsletter</p>
+            <form class="flex flex-col gap-5">
+                <input type="email" placeholder="Your email" class="bg-[#2a2a2a] border-none text-white text-sm focus:ring-1 focus:ring-[#6db3c8] block w-full p-4 placeholder-gray-600 transition-all">
+                <button type="submit" class="border border-gray-500 text-gray-300 uppercase tracking-widest text-[10px] font-semibold py-4 px-6 hover:bg-white hover:text-black transition-colors">Submit</button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="bg-[#1e1e1e] py-10 border-t border-[#333]">
+        <div class="max-w-screen-xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <img src="assets/Sulit_logo (1).png" alt="Sulit Logo" class="h-16 w-auto object-contain" />
+            <ul class="flex space-x-10 text-[9px] uppercase tracking-[0.2em] text-gray-500">
+                <li><a href="#" class="hover:text-white transition-colors">About</a></li>
+                <li><a href="#" class="hover:text-white transition-colors">Articles</a></li>
+                <li><a href="#" class="hover:text-white transition-colors">Subscribe</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 </body>
 </html>
