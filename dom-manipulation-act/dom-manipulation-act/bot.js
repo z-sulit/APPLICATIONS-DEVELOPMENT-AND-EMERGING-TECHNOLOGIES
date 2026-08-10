@@ -1,16 +1,16 @@
 // =============================== insert your code here ===============================
 
-// task 1: give it a name using getelementbyid and textcontent
+// task 1
 const robotName = document.getElementById("robotName");
 robotName.textContent = "ZachGPT";
 
-// task 2: recolor the eyes using queryselectorall, foreach, and style
+// task 2
 const eyes = document.querySelectorAll(".eye");
 eyes.forEach(function (eye) {
   eye.style.background = "#00e5ff";
 });
 
-// task 3: change the mood by adding a mood class
+// task 3
 const robot = document.getElementById("robot");
 robot.classList.add("happy");
 
@@ -18,12 +18,12 @@ robot.classList.add("happy");
 const speech = document.getElementById("speech");
 speech.textContent = "hello! i am zachgpt!";
 
-// task 5: react to clicks by changing speech
+// task 5
 robot.onclick = function () {
   speech.textContent = "beep boop! thanks for clicking me!";
 };
 
-// task 6: add accessories to append to the robot
+// task 6
 const accessory1 = document.createElement("div");
 accessory1.className = "accessory";
 accessory1.textContent = ":crown:";
