@@ -1,0 +1,270 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family:
+    Segoe UI,
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+}
+
+body {
+  background: #eef2f7;
+  color: #222;
+}
+
+.container {
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1400px;
+  margin: auto;
+  padding: 25px;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+ul {
+  margin-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#pts {
+  color: #1f8f42;
+  font-size: 13px;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 20px;
+}
+
+.panel {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* ================= ROBOT ================= */
+
+.robot-area {
+  text-align: center;
+}
+
+.robot {
+  margin: 25px auto;
+  width: 240px;
+}
+
+.head {
+  width: 220px;
+  height: 170px;
+  background: #bfc7d5;
+  border-radius: 20px;
+  position: relative;
+  margin: auto;
+}
+
+.antenna {
+  width: 6px;
+  height: 45px;
+  background: #666;
+  margin: auto;
+  position: relative;
+}
+
+.antenna::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background: #ff5252;
+  border-radius: 50%;
+  position: absolute;
+  left: -5px;
+  top: -10px;
+}
+
+.eyes {
+  display: flex;
+  justify-content: space-evenly;
+  padding-top: 45px;
+}
+
+.eye {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: #444;
+}
+
+.mouth {
+  width: 110px;
+  height: 12px;
+  background: #444;
+  margin: 35px auto;
+  border-radius: 10px;
+}
+
+.body {
+  margin: auto;
+  margin-top: 12px;
+  width: 180px;
+  height: 140px;
+  background: #aeb7c5;
+  border-radius: 15px;
+  position: relative;
+  padding-top: 20px;
+}
+
+.arms {
+  position: absolute;
+  width: 300px;
+  left: -60px;
+  top: 25px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.arm {
+  width: 55px;
+  height: 12px;
+  background: #666;
+}
+
+.legs {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 10px;
+}
+
+.leg {
+  width: 12px;
+  height: 60px;
+  background: #666;
+}
+
+#robotName {
+  margin-top: 15px;
+}
+
+#speech {
+  margin-top: 15px;
+  min-height: 60px;
+  padding: 10px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+/* ================= MOODS ================= */
+
+.happy .mouth {
+  border-radius: 0 0 100px 100px;
+  height: 18px;
+}
+
+.sad .mouth {
+  border-radius: 100px 100px 0 0;
+  height: 18px;
+}
+
+.excited {
+  animation: bounce 0.5s infinite alternate;
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-8px);
+  }
+}
+
+/* ================= EDITOR ================= */
+
+textarea {
+  width: 100%;
+  height: 330px;
+  resize: vertical;
+  padding: 15px;
+  font-family: Consolas, monospace;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+button {
+  margin-left: 20px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: rgb(254, 254, 254);
+  background: #0138a4;
+}
+
+.run {
+  background: #1f8f42;
+}
+
+.reset {
+  background: #d9534f;
+}
+
+/* ================= TASKS ================= */
+
+.tasks {
+  margin-top: 25px;
+}
+
+.task {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.task-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status {
+  background: #ddd;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.done {
+  background: #28a745;
+  color: white;
+}
+
+details {
+  margin-top: 10px;
+}
+
+code {
+  background: #eee;
+  padding: 2px 5px;
+  border-radius: 4px;
+}

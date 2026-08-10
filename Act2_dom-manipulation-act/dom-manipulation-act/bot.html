@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fix BeepBot - JavaScript DOM Manipulation Activity</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>
+        <i class="fa-solid fa-robot" style="color: rgb(197, 112, 26)"></i> Fix
+        BeepBot
+      </h1>
+      <p class="subtitle">
+        Write JavaScript to repair BeepBot. Use only JavaScript on a separate JS
+        (bot.js) file. Submit the whole project folder.
+      </p>
+
+      <div class="grid">
+        <!-- LEFT -->
+
+        <div class="panel robot-area">
+          <div id="robot" class="robot">
+            <div class="antenna"></div>
+
+            <div class="head">
+              <div class="eyes">
+                <div class="eye"></div>
+                <div class="eye"></div>
+              </div>
+
+              <div class="mouth"></div>
+            </div>
+
+            <div class="body">
+              <div class="arms">
+                <div class="arm"></div>
+                <div class="arm"></div>
+              </div>
+            </div>
+
+            <div class="legs">
+              <div class="leg"></div>
+              <div class="leg"></div>
+            </div>
+          </div>
+
+          <h2 id="robotName">Unnamed Robot</h2>
+
+          <div id="speech">...</div>
+        </div>
+
+        <div class="panel">
+          <div class="container">
+            <strong>Check task list:</strong>
+            <button id="updBtn" onclick="checkTasks()">Update</button>
+          </div>
+
+          <div class="tasks">
+            <div class="task">
+              <div class="task-title">
+                <strong>1. Give it a name</strong>
+                <span class="status" id="task1">Not Done</span>
+              </div>
+
+              <p>
+                Use <code>getElementById()</code> and <code>textContent</code>.
+              </p>
+            </div>
+
+            <div class="task">
+              <div class="task-title">
+                <strong>2. Recolor the eyes</strong>
+                <span class="status" id="task2">Not Done</span>
+              </div>
+
+              <p>
+                Use <code>querySelectorAll()</code>, <code>forEach()</code>, and
+                <code>style</code>.
+              </p>
+            </div>
+
+            <div class="task">
+              <div class="task-title">
+                <strong>3. Change the mood</strong>
+                <span class="status" id="task3">Not Done</span>
+              </div>
+
+              <p>Add one of these classes:</p>
+
+              <ul>
+                <li>happy</li>
+                <li>sad</li>
+                <li>excited</li>
+              </ul>
+            </div>
+
+            <div class="task">
+              <div class="task-title">
+                <strong>4. Make it talk</strong>
+                <span class="status" id="task4">Not Done</span>
+              </div>
+
+              <p>Update <code>#speech</code>.</p>
+            </div>
+
+            <div class="task">
+              <div class="task-title">
+                <strong>5. React to clicks</strong>
+                <span class="status" id="task5">Not Done</span>
+              </div>
+
+              <p>When the robot is clicked, change the speech.</p>
+            </div>
+
+            <div class="task">
+              <div class="task-title">
+                <strong>6. Add an accessory</strong>
+                <span class="status" id="task6">Not Done</span>
+              </div>
+
+              <p>Create a new element and append it to the robot.</p>
+            </div>
+
+            <div class="task">
+              <div class="task-title">
+                <strong>⭐ Bonus <span id="pts">+5 points</span></strong>
+                <span class="status" id="task7">Not Done</span>
+              </div>
+
+              <p>Create your own customization!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="bot.js"></script>
+  </body>
+</html>

@@ -2,7 +2,7 @@
 
 // task 1: give it a name using getelementbyid and textcontent
 const robotName = document.getElementById("robotName");
-robotName.textContent = "BeepBot";
+robotName.textContent = "ZachGPT";
 
 // task 2: recolor the eyes using queryselectorall, foreach, and style
 const eyes = document.querySelectorAll(".eye");
@@ -16,7 +16,7 @@ robot.classList.add("happy");
 
 // task 4: make it talk by updating speech
 const speech = document.getElementById("speech");
-speech.textContent = "hello! i am beepbot!";
+speech.textContent = "hello! i am zachgpt!";
 
 // task 5: react to clicks by changing speech
 robot.onclick = function () {
