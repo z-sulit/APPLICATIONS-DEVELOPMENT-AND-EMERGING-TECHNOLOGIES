@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Validation Activity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <div class="card">
+      <header class="card-header">
+        <h2>Create Account</h2>
+        <p>Please fill out the form below to register.</p>
+      </header>
+
+      <div id="successMessage" class="alert success" hidden>
+        Registration successful!
+      </div>
+
+      <form id="registrationForm" novalidate>
+        <div class="form-group" id="group-username">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="e.g. jondoe" autocomplete="username">
+          <small class="error-msg" id="error-username"></small>
+        </div>
+
+        <div class="form-group" id="group-email">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="e.g. john@example.com" autocomplete="email">
+          <small class="error-msg" id="error-email"></small>
+        </div>
+
+        <div class="form-group" id="group-password">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="At least 8 characters" autocomplete="new-password">
+          <small class="error-msg" id="error-password"></small>
+        </div>
+
+        <div class="form-group" id="group-confirmPassword">
+          <label for="confirmPassword">Confirm Password</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your password" autocomplete="new-password">
+          <small class="error-msg" id="error-confirmPassword"></small>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn">Register</button>
+      </form>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
