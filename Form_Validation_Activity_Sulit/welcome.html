@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome Page</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <video autoplay muted loop playsinline id="bgVideo">
+    <source src="peace.mp4" type="video/mp4">
+  </video>
+
+  <main class="container">
+    <div class="card text-center">
+      <header class="card-header">
+        <h2 id="welcomeHeading">Welcome!</h2>
+        <p id="welcomeSubtext">Validation successful.</p>
+      </header>
+
+      <div class="alert success" style="margin-bottom: 1.5rem;">
+        Form submitted successfully!
+      </div>
+
+      <button id="logoutBtn" class="btn btn-primary">Return to Main Page</button>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const mode = params.get('mode') || 'account';
+      const user = params.get('user') || 'User';
+
+      const heading = document.getElementById('welcomeHeading');
+      const subtext = document.getElementById('welcomeSubtext');
+
+      if (mode === 'signup') {
+        heading.textContent = `Welcome, ${user}!`;
+        subtext.textContent = 'Your Sign Up form validation was successful.';
+      } else if (mode === 'login' || mode === 'signin') {
+        heading.textContent = `Welcome Back, ${user}!`;
+        subtext.textContent = 'Your Login form validation was successful.';
+      }
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        window.location.href = 'index.html';
+      });
+    });
+  </script>
+</body>
+</html>

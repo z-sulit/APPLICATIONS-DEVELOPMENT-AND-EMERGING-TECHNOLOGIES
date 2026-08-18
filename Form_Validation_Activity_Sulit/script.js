@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Views & Buttons
+  // Views & Selection Buttons
   const selectionView = document.getElementById('selectionView');
   const formView = document.getElementById('formView');
   const btnChooseSignUp = document.getElementById('btnChooseSignUp');
   const btnChooseSignIn = document.getElementById('btnChooseSignIn');
+  const backBtn = document.getElementById('backBtn');
 
   // Form Elements
   const form = document.getElementById('authForm');
@@ -13,18 +14,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const successAlert = document.getElementById('successAlert');
 
   // Input groups & inputs
-  const usernameGroup = document.getElementById('group-username');
-  const confirmPasswordGroup = document.getElementById('group-confirmPassword');
+  const phoneGroup = document.getElementById('group-phone');
 
-  const usernameInput = document.getElementById('username');
   const emailInput = document.getElementById('email');
+  const phoneInput = document.getElementById('phone');
   const passwordInput = document.getElementById('password');
-  const confirmPasswordInput = document.getElementById('confirmPassword');
 
-  let currentMode = 'signup';
+  let currentMode = 'signup'; // 'signup' or 'login'
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/;
 
   // Helper UI functions
   function showError(input, message) {
@@ -62,141 +60,133 @@ document.addEventListener('DOMContentLoaded', () => {
   function resetFormState() {
     form.reset();
     successAlert.hidden = true;
-    [usernameInput, emailInput, passwordInput, confirmPasswordInput].forEach(clearState);
+    [emailInput, phoneInput, passwordInput].forEach(clearState);
   }
 
+  // View Switchers
   function showFormView(mode) {
     currentMode = mode;
     resetFormState();
 
     if (mode === 'signup') {
-      formTitle.textContent = 'Create Account';
-      formSubtext.textContent = 'Please fill out the form below to register.';
-      submitBtn.textContent = 'Register';
+      formTitle.textContent = 'Sign Up';
+      formSubtext.textContent = 'Please fill out the fields below to create an account.';
+      submitBtn.textContent = 'Sign Up';
 
-      usernameGroup.classList.remove('hidden');
-      confirmPasswordGroup.classList.remove('hidden');
+      phoneGroup.classList.remove('hidden');
     } else {
-      formTitle.textContent = 'Sign In';
-      formSubtext.textContent = 'Enter your credentials to access your account.';
-      submitBtn.textContent = 'Sign In';
+      formTitle.textContent = 'Login';
+      formSubtext.textContent = 'Enter your email and password to log in.';
+      submitBtn.textContent = 'Login';
 
-      usernameGroup.classList.add('hidden');
-      confirmPasswordGroup.classList.add('hidden');
+      phoneGroup.classList.add('hidden');
     }
 
     selectionView.classList.add('hidden');
     formView.classList.remove('hidden');
   }
 
-  // Event Listeners for Selection Screen
-  btnChooseSignUp.addEventListener('click', () => showFormView('signup'));
-  btnChooseSignIn.addEventListener('click', () => showFormView('signin'));
-
-  // Field Validations
-  function validateUsername() {
-    if (currentMode !== 'signup') return true;
-    const value = usernameInput.value.trim();
-    if (value === '') {
-      showError(usernameInput, 'Username is required');
-      return false;
-    } else if (value.length < 3) {
-      showError(usernameInput, 'Username must be at least 3 characters long');
-      return false;
-    }
-    showSuccess(usernameInput);
-    return true;
+  function showSelectionView() {
+    resetFormState();
+    formView.classList.add('hidden');
+    selectionView.classList.remove('hidden');
   }
 
+  // Event Listeners for Buttons
+  btnChooseSignUp.addEventListener('click', () => showFormView('signup'));
+  btnChooseSignIn.addEventListener('click', () => showFormView('login'));
+  backBtn.addEventListener('click', showSelectionView);
+
+  // Field Validation Functions
   function validateEmail() {
     const value = emailInput.value.trim();
     if (value === '') {
-      showError(emailInput, 'Email address is required');
+      showError(emailInput, 'Email address is required.');
       return false;
     } else if (!emailRegex.test(value)) {
-      showError(emailInput, 'Please enter a valid email address');
+      showError(emailInput, 'Please enter a valid email format (e.g. user@domain.com).');
       return false;
     }
     showSuccess(emailInput);
     return true;
   }
 
+  function validatePhone() {
+    if (currentMode !== 'signup') return true;
+
+    const value = phoneInput.value.trim();
+    if (value === '') {
+      showError(phoneInput, 'Phone number is required.');
+      return false;
+    }
+    showSuccess(phoneInput);
+    return true;
+  }
+
   function validatePassword() {
     const value = passwordInput.value;
+
     if (value === '') {
-      showError(passwordInput, 'Password is required');
+      showError(passwordInput, 'Password is required.');
       return false;
     }
 
     if (currentMode === 'signup') {
-      if (value.length < 8) {
-        showError(passwordInput, 'Password must be at least 8 characters long');
+      const hasMinLength = value.length >= 8;
+      const hasNumber = /\d/.test(value);
+
+      if (!hasMinLength && !hasNumber) {
+        showError(passwordInput, 'Password must be at least 8 characters long and contain a number.');
         return false;
-      } else if (!passwordRegex.test(value)) {
-        showError(passwordInput, 'Password must contain at least 1 letter and 1 number');
+      } else if (!hasMinLength) {
+        showError(passwordInput, 'Password must be at least 8 characters long.');
+        return false;
+      } else if (!hasNumber) {
+        showError(passwordInput, 'Password must contain at least one number.');
         return false;
       }
     }
 
     showSuccess(passwordInput);
-
-    if (currentMode === 'signup' && confirmPasswordInput.value !== '') {
-      validateConfirmPassword();
-    }
     return true;
   }
 
-  function validateConfirmPassword() {
-    if (currentMode !== 'signup') return true;
-    const value = confirmPasswordInput.value;
-    const passwordValue = passwordInput.value;
-
-    if (value === '') {
-      showError(confirmPasswordInput, 'Please confirm your password');
-      return false;
-    } else if (value !== passwordValue) {
-      showError(confirmPasswordInput, 'Passwords do not match');
-      return false;
-    }
-    showSuccess(confirmPasswordInput);
-    return true;
-  }
-
-  // Real-time input listeners
-  usernameInput.addEventListener('input', validateUsername);
+  // Real-time Event Handling (input & blur)
   emailInput.addEventListener('input', validateEmail);
-  passwordInput.addEventListener('input', validatePassword);
-  confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+  emailInput.addEventListener('blur', validateEmail);
 
-  // Form Submit Handler
+  phoneInput.addEventListener('input', validatePhone);
+  phoneInput.addEventListener('blur', validatePhone);
+
+  passwordInput.addEventListener('input', validatePassword);
+  passwordInput.addEventListener('blur', validatePassword);
+
+  // Form Submit Event Handling
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    let isValid = false;
+    let isFormValid = false;
 
     if (currentMode === 'signup') {
-      const isUsernameValid = validateUsername();
       const isEmailValid = validateEmail();
+      const isPhoneValid = validatePhone();
       const isPasswordValid = validatePassword();
-      const isConfirmPasswordValid = validateConfirmPassword();
-      isValid = isUsernameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid;
+      isFormValid = isEmailValid && isPhoneValid && isPasswordValid;
     } else {
       const isEmailValid = validateEmail();
       const isPasswordValid = validatePassword();
-      isValid = isEmailValid && isPasswordValid;
+      isFormValid = isEmailValid && isPasswordValid;
     }
 
-    if (isValid) {
-      const actionName = currentMode === 'signup' ? 'Registration' : 'Sign in';
-      successAlert.textContent = `${actionName} successful!`;
+    if (isFormValid) {
+      const userVal = emailInput.value.trim().split('@')[0];
+      // Display success alert & redirect to Welcome page
+      successAlert.textContent = `${currentMode === 'signup' ? 'Sign Up' : 'Login'} validation successful! Redirecting...`;
       successAlert.hidden = false;
 
-      form.reset();
-      [usernameInput, emailInput, passwordInput, confirmPasswordInput].forEach(clearState);
-
       setTimeout(() => {
-        successAlert.hidden = true;
-      }, 4000);
+        window.location.href = `welcome.html?mode=${currentMode}&user=${encodeURIComponent(userVal)}`;
+      }, 1000);
     } else {
       successAlert.hidden = true;
     }

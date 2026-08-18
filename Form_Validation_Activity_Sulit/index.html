@@ -10,38 +10,39 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <video autoplay muted loop playsinline id="bgVideo">
+    <source src="peace.mp4" type="video/mp4">
+  </video>
+
   <main class="container">
     <div class="card">
-      <!-- 1. Initial Selection View -->
+      <!-- Initial Page Layout Structure -->
       <div id="selectionView" class="view">
         <header class="card-header text-center">
-          <h2>Get Started</h2>
-          <p>Choose an option below to proceed.</p>
+          <h2>Welcome!</h2>
+          <p>Please choose an option to direct you to the appropriate form.</p>
         </header>
 
         <div class="selection-actions">
           <button type="button" id="btnChooseSignUp" class="btn btn-primary">Sign Up</button>
-          <button type="button" id="btnChooseSignIn" class="btn btn-outline">Sign In</button>
+          <button type="button" id="btnChooseSignIn" class="btn btn-outline">Login</button>
         </div>
       </div>
 
-      <!-- 2. Form View (Hidden by default) -->
+      <!-- Form View -->
       <div id="formView" class="view hidden">
+        <div class="form-navigation">
+          <button type="button" id="backBtn" class="back-link">&larr; Back to Welcome</button>
+        </div>
+
         <header class="card-header">
-          <h2 id="formTitle">Create Account</h2>
-          <p id="formSubtext">Please fill out the form below to register.</p>
+          <h2 id="formTitle">Sign Up</h2>
+          <p id="formSubtext">Please fill out the details below.</p>
         </header>
 
         <div id="successAlert" class="alert success" hidden></div>
 
         <form id="authForm" novalidate>
-          <!-- Username (Sign Up Only) -->
-          <div class="form-group" id="group-username">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" placeholder="e.g. jondoe" autocomplete="username">
-            <small class="error-msg" id="error-username"></small>
-          </div>
-
           <!-- Email (Both Modes) -->
           <div class="form-group" id="group-email">
             <label for="email">Email Address</label>
@@ -49,21 +50,21 @@
             <small class="error-msg" id="error-email"></small>
           </div>
 
+          <!-- Phone Number (Sign Up Only) -->
+          <div class="form-group" id="group-phone">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="e.g. 09123456789" autocomplete="tel">
+            <small class="error-msg" id="error-phone"></small>
+          </div>
+
           <!-- Password (Both Modes) -->
           <div class="form-group" id="group-password">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="At least 8 characters" autocomplete="current-password">
+            <input type="password" id="password" name="password" placeholder="At least 8 characters with a number" autocomplete="current-password">
             <small class="error-msg" id="error-password"></small>
           </div>
 
-          <!-- Confirm Password (Sign Up Only) -->
-          <div class="form-group" id="group-confirmPassword">
-            <label for="confirmPassword">Confirm Password</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your password" autocomplete="new-password">
-            <small class="error-msg" id="error-confirmPassword"></small>
-          </div>
-
-          <button type="submit" id="submitBtn" class="btn btn-primary">Register</button>
+          <button type="submit" id="submitBtn" class="btn btn-primary">Sign Up</button>
         </form>
       </div>
     </div>

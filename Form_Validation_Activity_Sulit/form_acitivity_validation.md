@@ -1,25 +1,20 @@
 # Form Validation Activity Requirements
 
 ## Overview
-Build a clean, responsive registration form with client-side JavaScript validation.
+Create a simple web application that contains two forms: Sign Up and Sign In. On the first page, the user must choose whether they want to Sign Up or Sign In through two buttons, and then be redirected to the correct page.
 
-## Fields & Validation Rules
-1. **Username**
-   - Required.
-   - Minimum length of 3 characters.
-2. **Email Address**
-   - Required.
-   - Must match standard email format (`user@domain.com`).
-3. **Password**
-   - Required.
-   - Minimum length of 8 characters.
-   - Must contain at least 1 letter and 1 number.
-4. **Confirm Password**
-   - Required.
-   - Must match the `Password` field.
+Each form must include input validation using JavaScript before the form is submitted. Use event handling such as submit, input, and blur to show error messages and prevent the form from submitting if validation fails. If the form is valid, display a success message or redirect to a “Welcome” page.
 
-## User Experience Features
-- Display clear error messages under the specific input field upon invalid entry or submit.
-- Real-time validation updates as the user types (`input` event listeners).
-- Highlight valid/invalid fields visually with appropriate border styles.
-- Show a success alert notification when the form passes all validations upon submit.
+## Initial Page Layout Structure
+The initial page layout must contain a "Welcome!" heading, a Sign Up button, and a Login button to direct the user to the appropriate form.
+
+## Validation Requirements
+
+### Sign Up Form
+1. **Email**: Validate that the email is in a proper format (`user@domain.com`).
+2. **Phone Number**: Validate that the phone number is filled.
+3. **Password**: Validate that the password is at least 8 characters long and contains a number.
+
+### Sign In (Login) Form
+1. **Email**: Validate that the email field is not empty and that the email format is valid.
+2. **Password**: Validate that the password field is not empty.
