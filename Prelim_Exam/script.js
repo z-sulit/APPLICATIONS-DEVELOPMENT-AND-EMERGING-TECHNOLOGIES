@@ -91,7 +91,7 @@ function render() {
 
 // Add a new task to the state
 function addTask(text) {
-    // nos to empty task
+    // No's to empty task
     if (text.trim() === "") {
         errorMsg.style.display = "block";
         return;
