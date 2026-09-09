@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="styles.css?v=2">
+</head>
+<body>
+    <!-- Video Background -->
+    <video autoplay muted loop playsinline class="background-p-css">
+        <source src="background-p-css.mp4" type="video/mp4">
+    </video>
+
+    <!-- Main UI Container -->
+    <div class="box">
+        <h2>To-Do List</h2>
+        
+        <!-- Form to add new tasks -->
+        <form id="task-form">
+            <input type="text" id="task-input" placeholder="New task">
+            <button type="submit">Add Task</button>
+        </form>
+        
+        <!-- Error message -->
+        <p id="error-msg" style="display: none; color: red;">Task cannot be empty</p>
+        
+        <!-- Container for dynamic task rendering -->
+        <ul id="task-list"></ul>
+        
+        <!-- Async delete all button -->
+        <button id="delete-all-btn">Delete All</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
