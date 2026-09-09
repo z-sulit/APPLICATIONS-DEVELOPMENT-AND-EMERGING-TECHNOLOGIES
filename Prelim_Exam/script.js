@@ -54,7 +54,7 @@ function render() {
             li.appendChild(saveBtn);
             li.appendChild(cancelBtn);
         } else {
-            // Task text with conditional strikethrough for completed tasks
+            // Task text
             const span = document.createElement('span');
             span.textContent = task.text;
             if (task.completed) {
