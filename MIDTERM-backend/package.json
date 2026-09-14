@@ -1,0 +1,16 @@
+{
+  "name": "applications-development-and-emerging-technologies",
+  "version": "1.0.0",
+  "description": "Just for submission",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

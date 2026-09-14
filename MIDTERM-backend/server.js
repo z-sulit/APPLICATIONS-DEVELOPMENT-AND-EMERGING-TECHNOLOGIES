@@ -35,23 +35,22 @@ app.post("/users", (req, res) => {
     res.status(201).json(newUser);
 });
 
-// post request
-app.post("/users", (req, res) => {
-    const { name, email } = req.body;
+// put request
+app.put("/users/:id", (req, res) => {
+    const id = parseInt(req.params.id);
 
-    if (!name || !email) {
-        return res.status(400).json({
-            message: "Name and email are required",
-        });
+    const index = users.findIndex((u) => u.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({ message: "User not found" });
     }
 
-    const newUser = {
-        id: users.length + 1,
-        name,
-        email,
+    users[index] = {
+        // ...users[index],
+        ...req.body,
+        id: id,
+        // name: req.body.name,
     };
 
-    users.push(newUser);
-
-    res.status(201).json(newUser);
+    res.json(users[index]);
 });
