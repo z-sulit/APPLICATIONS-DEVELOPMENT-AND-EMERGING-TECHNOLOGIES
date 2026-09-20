@@ -15,7 +15,7 @@ function clearAlert() {
   alertBox.className = 'alert hidden';
 }
 
-// --- Login Form Logic ---
+// LOgin
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
   const usernameInput = document.getElementById('username');
@@ -65,7 +65,7 @@ if (loginForm) {
   });
 }
 
-// --- Signup Form Logic ---
+// SIgnup
 const signupForm = document.getElementById('signupForm');
 if (signupForm) {
   const emailInput = document.getElementById('email');
