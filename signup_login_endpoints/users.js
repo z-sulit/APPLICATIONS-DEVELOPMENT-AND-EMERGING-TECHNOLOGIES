@@ -1,10 +1,8 @@
-
-
 let users = [
-    { id: 1, name: "John Doe", email: "john@example.com" },
-    { id: 2, name: "Jane Smith", email: "jane@example.com" },
-    { id: 3, name: "sayuri", email: "sayuri@example.com" },
-    { id: 4, name: "Strelitzia", email: "strelitzia@example.com" }
+    { id: 1, username: "johndoe", email: "john@example.com", password: "password123" },
+    { id: 2, username: "janesmith", email: "jane@example.com", password: "password123" },
+    { id: 3, username: "sayuri", email: "sayuri@example.com", password: "password123" },
+    { id: 4, username: "strelitzia", email: "strelitzia@example.com", password: "password123" }
 ];
 
 module.exports = users;

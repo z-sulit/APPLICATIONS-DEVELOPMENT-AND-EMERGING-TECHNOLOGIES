@@ -13,7 +13,6 @@ app.listen(PORT, () => {
 app.get("/users", (req, res) => {
     res.json(users);
 });
-
 //getting a siungple user by id
 app.get("/users/:id", (req, res) => {
     const id = parseInt(req.params.id);
@@ -25,7 +24,6 @@ app.get("/users/:id", (req, res) => {
     }
     res.json(user);
 });
-
 // post request
 app.post("/users", (req, res) => {
     const { name, email } = req.body;
@@ -66,7 +64,6 @@ app.put("/users/:id", (req, res) => {
 
     res.json(users[index]);
 });
-
 // patch (partial update/s)
 app.patch("/users/:id", (req, res) => {
     const id = parseInt(req.params.id);
@@ -83,7 +80,6 @@ app.patch("/users/:id", (req, res) => {
 
     res.json(user);
 });
-
 // delete
 app.delete("/users/:id", (req, res) => {
     const id = parseInt(req.params.id);
