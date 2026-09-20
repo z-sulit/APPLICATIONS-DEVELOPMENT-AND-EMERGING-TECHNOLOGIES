@@ -1,4 +1,4 @@
-// synthetic data for users
+
 
 let users = [
     { id: 1, name: "John Doe", email: "john@example.com" },
