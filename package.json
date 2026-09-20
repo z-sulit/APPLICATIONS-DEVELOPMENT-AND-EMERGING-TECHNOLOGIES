@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "express": "^5.2.1",
+    "flowbite": "^4.0.2"
+  },
+  "name": "applications-development-and-emerging-technologies",
+  "version": "1.0.0",
+  "description": "Just for submission",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/z-sulit/APPLICATIONS-DEVELOPMENT-AND-EMERGING-TECHNOLOGIES.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/z-sulit/APPLICATIONS-DEVELOPMENT-AND-EMERGING-TECHNOLOGIES/issues"
+  },
+  "homepage": "https://github.com/z-sulit/APPLICATIONS-DEVELOPMENT-AND-EMERGING-TECHNOLOGIES#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
