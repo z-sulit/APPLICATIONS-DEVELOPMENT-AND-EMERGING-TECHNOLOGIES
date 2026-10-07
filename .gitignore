@@ -1,8 +1,8 @@
-package.json
-package-lock.json
-node_modules/
-.env
-.env.*
+node_modules/                                        
+.env                                                 
+.env.*                                               
+!.env.example                                        
+!.env.sample  
 
 
 PORT=3000
