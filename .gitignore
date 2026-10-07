@@ -1,2 +1,11 @@
 package.json
 package-lock.json
+node_modules/
+.env
+.env.*
+
+
+PORT=3000
+JWT_SECRET=replace_me_with_output_of_randomBytes 
+JWT_EXPIRES_IN=1h
+
