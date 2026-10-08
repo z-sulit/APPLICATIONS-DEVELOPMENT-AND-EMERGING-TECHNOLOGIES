@@ -12,10 +12,12 @@ function signToken(user) {
 
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    // accept username, bio, name
+    const { name, username, email, password, bio } = req.body;
+    const displayName = username || name;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ error: "Name, email and password are required" });
+    if (!displayName || !email || !password) {
+      return res.status(400).json({ error: "Username/name, email and password are required" });
     }
     if (password.length < 8) {
       return res.status(400).json({ error: "Password must be at least 8 characters" });
@@ -25,7 +27,8 @@ exports.register = async (req, res, next) => {
     }
 
     const passwordHash = await bcrypt.hash(password, 10); // never store plain passwords
-    User.create({ name, email, passwordHash });
+    // save user with bio
+    User.create({ name: displayName, username: displayName, email, passwordHash, bio });
 
     res.status(201).json({ message: "Account created. You can log in now." });
   } catch (err) {

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registered Users</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 500px; margin: 3rem auto; padding: 0 1rem; }
+    .user-item { border: 1px solid #ddd; border-radius: 8px; padding: .8rem; margin-bottom: .8rem; }
+    .user-item h3 { margin: 0 0 .4rem 0; font-size: 1.1rem; }
+    .user-item p { margin: .2rem 0; color: #444; }
+    button { padding: .6rem 1rem; font-size: 1rem; cursor: pointer; width: 100%; margin-top: .5rem; }
+    #status-msg { color: #666; font-style: italic; }
+  </style>
+</head>
+<body>
+  <h1>Registered Users</h1>
+  <p id="status-msg">Loading users...</p>
+  <div id="users-list"></div>
+
+  <a href="/dashboard.html"><button type="button">Back to Dashboard</button></a>
+  <a href="/about.html"><button type="button">About Me</button></a>
+  <button id="logout" style="margin-top: 1rem;">Log out</button>
+
+  <script>
+    // verify token exists
+    const token = localStorage.getItem("token");
+    if (!token) window.location.href = "/index.html";
+
+    // fetch all registered users
+    async function loadUsers() {
+      // request users list with bearer token
+      const res = await fetch("/api/users", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // handle invalid or expired session
+      if (!res.ok) {
+        localStorage.removeItem("token");
+        window.location.href = "/index.html";
+        return;
+      }
+
+      // render each user safely
+      const users = await res.json();
+      const statusMsg = document.getElementById("status-msg");
+      const listContainer = document.getElementById("users-list");
+
+      if (users.length === 0) {
+        statusMsg.textContent = "No registered users found.";
+        return;
+      }
+
+      statusMsg.style.display = "none";
+      listContainer.innerHTML = "";
+
+      // build user cards
+      users.forEach((u) => {
+        const item = document.createElement("div");
+        item.className = "user-item";
+        item.innerHTML = `
+          <h3>${u.username || u.name || "Unknown"}</h3>
+          <p><strong>Email:</strong> ${u.email}</p>
+          <p><strong>Bio:</strong> ${u.bio || "No bio provided"}</p>
+        `;
+        listContainer.appendChild(item);
+      });
+    }
+
+    // handle logout
+    document.getElementById("logout").addEventListener("click", () => {
+      localStorage.removeItem("token");
+      window.location.href = "/index.html";
+    });
+
+    loadUsers();
+  </script>
+</body>
+</html>

@@ -25,8 +25,10 @@
 
   <h2>Create account</h2>
   <form id="register-form">
-    <input type="text" id="reg-name" placeholder="Name" required />
+    <input type="text" id="reg-name" placeholder="Username" required />
     <input type="email" id="reg-email" placeholder="Email" required />
+    <!-- optional bio field -->
+    <input type="text" id="reg-bio" placeholder="Bio (optional)" />
     <input type="password" id="reg-password" placeholder="Password (min 8 characters)" required />
     <button type="submit">Create account</button>
   </form>
@@ -50,9 +52,12 @@
 
     document.getElementById("register-form").addEventListener("submit", async (e) => {
       e.preventDefault();
+      // send username, email, password, and bio
       const { ok, data } = await post("/api/auth/register", {
         name: document.getElementById("reg-name").value,
+        username: document.getElementById("reg-name").value,
         email: document.getElementById("reg-email").value,
+        bio: document.getElementById("reg-bio").value,
         password: document.getElementById("reg-password").value,
       });
       show(ok ? data.message : data.error, ok);
