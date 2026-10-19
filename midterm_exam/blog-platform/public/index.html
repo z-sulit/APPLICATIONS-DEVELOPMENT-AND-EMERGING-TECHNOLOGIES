@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BLOGBLOBLOG — Everything, All At Once</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Masthead Header -->
+    <header class="masthead">
+      <div class="masthead-top">
+        <div>
+          <h1 class="brand-title">BLOGBLOBLOG</h1>
+          <p class="brand-tagline">EVERYTHING, ALL AT ONCE</p>
+        </div>
+        <div class="nav-controls">
+          <nav class="nav-links">
+            <a href="#" id="nav-blogs" class="active">BLOGS</a>
+            <a href="#" id="nav-about">ABOUT</a>
+            <a href="#" id="nav-new-blog">NEW BLOG</a>
+          </nav>
+          <div class="user-toolbar">
+            <span class="user-badge" id="user-display">[Guest]</span>
+            <button class="btn-sm" id="btn-auth-toggle">Log In</button>
+            <button class="btn-sm hidden" id="btn-refresh-token" title="Rotate Access Token via Auth Server">Refresh Token</button>
+            <button class="btn-sm btn-danger hidden" id="btn-logout">Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Status Banner: Soft green success / Soft red error notification -->
+    <div id="status-banner" class="status-banner"></div>
+
+    <!-- Collapsible Card: Sign In / Create Account Form -->
+    <section id="auth-card" class="collapsible-card hidden">
+      <div class="card-header">
+        <span id="auth-card-title">Authentication Portal</span>
+        <button class="btn-sm" id="btn-close-auth">Close</button>
+      </div>
+      <div class="card-body">
+        <div class="tab-nav">
+          <button class="tab-btn active" id="tab-login">Log In</button>
+          <button class="tab-btn" id="tab-register">Create Account</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="form-login">
+          <div class="form-group">
+            <label for="login-username">Username</label>
+            <input type="text" id="login-username" class="form-control" required placeholder="Enter username">
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" class="form-control" required placeholder="Enter password">
+          </div>
+          <button type="submit" class="btn-primary">Sign In</button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="form-register" class="hidden">
+          <div class="form-group">
+            <label for="reg-username">Username</label>
+            <input type="text" id="reg-username" class="form-control" required placeholder="Choose a username">
+          </div>
+          <div class="form-group">
+            <label for="reg-password">Password</label>
+            <input type="password" id="reg-password" class="form-control" required placeholder="Choose a strong password">
+          </div>
+          <div class="form-group">
+            <label for="reg-role">Role Assignment</label>
+            <select id="reg-role" class="form-control" required>
+              <option value="reader">Reader (Read-only)</option>
+              <option value="author" selected>Author (Read & Create/Edit Own)</option>
+              <option value="admin">Admin (Full Read, Write & Delete Access)</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary">Register Account</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Collapsible Card: Publish Blogbloblog Post Form -->
+    <section id="post-card" class="collapsible-card hidden">
+      <div class="card-header">
+        <span id="post-card-title">Publish Blogbloblog Post Form</span>
+        <button class="btn-sm" id="btn-close-post">Close</button>
+      </div>
+      <div class="card-body">
+        <form id="form-post">
+          <input type="hidden" id="edit-post-id" value="">
+          <div class="form-group">
+            <label for="post-title">Headline / Title</label>
+            <input type="text" id="post-title" class="form-control" required placeholder="e.g., The Anatomy of a Distributed Token Refresh">
+          </div>
+          <div class="form-group">
+            <label for="post-content">Dispatch Content</label>
+            <textarea id="post-content" class="form-control" rows="4" required placeholder="Write your dispatch here..."></textarea>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" id="btn-submit-post" class="btn-primary">Publish Dispatch</button>
+            <button type="button" id="btn-cancel-edit" class="btn-sm hidden">Cancel Edit</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Main Dispatches Section -->
+    <main class="content-section">
+      <div class="section-header">
+        <h2 class="section-title" id="feed-title">All Dispatches</h2>
+        <div class="filter-actions">
+          <button id="filter-all" class="active">All Dispatches</button>
+          <button id="filter-mine" class="hidden">My Posts</button>
+          <button id="btn-refresh-feed">↻ Refresh</button>
+        </div>
+      </div>
+
+      <div id="dispatches-feed" class="dispatches-feed">
+        <div class="empty-state">Loading dispatches...</div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="masthead-footer">
+      Copyright © Blogbloblog 2026
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
