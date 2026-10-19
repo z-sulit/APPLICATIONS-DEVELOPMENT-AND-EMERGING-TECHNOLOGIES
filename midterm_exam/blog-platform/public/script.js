@@ -23,8 +23,6 @@ const navAll = document.getElementById('nav-all');
 const navMine = document.getElementById('nav-mine');
 const navCompose = document.getElementById('nav-compose');
 
-const ctaActionPanel = document.getElementById('cta-action-panel');
-const ctaActionLabel = document.getElementById('cta-action-label');
 
 const panelTabbedHeader = document.getElementById('panel-tabbed-header');
 const tabLogin = document.getElementById('tab-login');
@@ -50,11 +48,11 @@ const feedHeadingText = document.getElementById('feed-heading-text');
 const btnRefreshFeed = document.getElementById('btn-refresh-feed');
 const dispatchesGrid = document.getElementById('dispatches-bento-grid');
 
+// Claims elements (if present)
 const claimUserVal = document.getElementById('claim-user-val');
 const claimRoleVal = document.getElementById('claim-role-val');
 const claimIdVal = document.getElementById('claim-id-val');
 const claimExpVal = document.getElementById('claim-exp-val');
-
 const btnTriggerRefresh = document.getElementById('btn-trigger-refresh');
 const btnTriggerLogout = document.getElementById('btn-trigger-logout');
 
@@ -101,11 +99,13 @@ function updateAuthState() {
       navUserRole.textContent = currentUser.role;
       navAuthLabel.textContent = 'Log Out';
 
-      // Claims drawer
-      claimUserVal.textContent = currentUser.username;
-      claimRoleVal.textContent = currentUser.role;
-      claimIdVal.textContent = `#${currentUser.id}`;
-      claimExpVal.textContent = new Date(currentUser.exp * 1000).toLocaleTimeString();
+      // Claims drawer (if present)
+      if (claimUserVal) {
+        claimUserVal.textContent = currentUser.username;
+        claimRoleVal.textContent = currentUser.role;
+        claimIdVal.textContent = `#${currentUser.id}`;
+        claimExpVal.textContent = new Date(currentUser.exp * 1000).toLocaleTimeString();
+      }
 
       // Workspace slot based on role
       panelTabbedHeader.classList.add('hidden');
@@ -115,11 +115,9 @@ function updateAuthState() {
       if (currentUser.role === 'reader') {
         formEditor.classList.add('hidden');
         readerNotice.classList.remove('hidden');
-        ctaActionLabel.textContent = 'Active Reader';
       } else {
         readerNotice.classList.add('hidden');
         formEditor.classList.remove('hidden');
-        ctaActionLabel.textContent = 'Write Dispatch';
       }
       return;
     }
@@ -136,17 +134,18 @@ function updateAuthState() {
   navUserRole.textContent = 'Guest';
   navAuthLabel.textContent = 'Log In';
 
-  claimUserVal.textContent = 'None (Guest)';
-  claimRoleVal.textContent = 'None';
-  claimIdVal.textContent = '—';
-  claimExpVal.textContent = '—';
+  if (claimUserVal) {
+    claimUserVal.textContent = 'None (Guest)';
+    claimRoleVal.textContent = 'None';
+    claimIdVal.textContent = '—';
+    claimExpVal.textContent = '—';
+  }
 
   // Workspace shows Login/Register
   panelTabbedHeader.classList.remove('hidden');
   readerNotice.classList.add('hidden');
   formEditor.classList.add('hidden');
   tabLogin.click();
-  ctaActionLabel.textContent = 'Write / Sign In';
 
   if (currentView === 'mine') {
     switchView('all');
@@ -161,8 +160,12 @@ async function fetchPosts() {
 
     if (currentView === 'mine') {
       if (!accessToken) {
-        setStatus('Log in required to view your personal dispatches.', true);
-        switchView('all');
+        setStatus('Please log in to view your personal dispatches.', true);
+        document.getElementById('interactive-workspace').scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => {
+          const loginInput = document.getElementById('login-username');
+          if (loginInput) loginInput.focus();
+        }, 400);
         return;
       }
       url = `${BLOG_URL}/api/me/posts`;
@@ -186,12 +189,21 @@ async function fetchPosts() {
 
 function renderPosts(posts) {
   if (!posts || posts.length === 0) {
-    dispatchesGrid.innerHTML = `
-      <div class="empty-state-bento">
-        <p style="font-size: 1.125rem; font-weight: 600; margin-bottom: 6px;">No dispatches published yet</p>
-        <p style="font-size: 0.875rem;">Log in as an <strong>author</strong> or <strong>admin</strong> to publish the first dispatch.</p>
-      </div>
-    `;
+    if (currentView === 'mine') {
+      dispatchesGrid.innerHTML = `
+        <div class="empty-state-bento">
+          <p style="font-size: 1.125rem; font-weight: 600; margin-bottom: 6px;">You haven't published any dispatches yet</p>
+          <p style="font-size: 0.875rem;">Use the post editor above to publish your first personal dispatch.</p>
+        </div>
+      `;
+    } else {
+      dispatchesGrid.innerHTML = `
+        <div class="empty-state-bento">
+          <p style="font-size: 1.125rem; font-weight: 600; margin-bottom: 6px;">No dispatches published yet</p>
+          <p style="font-size: 0.875rem;">Log in as an <strong>author</strong> or <strong>admin</strong> to publish the first dispatch.</p>
+        </div>
+      `;
+    }
     return;
   }
 
@@ -212,11 +224,11 @@ function renderPosts(posts) {
           <span class="author-pill-tag">Dispatch</span>
           <h3 class="post-card-title">${escapeHtml(post.title)}</h3>
           <p class="post-card-excerpt">${escapeHtml(post.content)}</p>
+          ${canEdit || canDelete ? `
           <div class="card-footer-actions">
             ${canEdit ? `<button class="action-link" onclick="startEditPost(${post.id})">Edit Post</button>` : ''}
             ${canDelete ? `<button class="action-link action-link-danger" onclick="deletePost(${post.id})">Delete Post</button>` : ''}
-            <button class="action-link" style="color: var(--text-muted);" onclick="viewPostJson(${post.id})">View JSON</button>
-          </div>
+          </div>` : ''}
         </div>
       </article>
       `;
@@ -229,13 +241,6 @@ function escapeHtml(text) {
   div.textContent = text;
   return div.innerHTML;
 }
-
-window.viewPostJson = function(id) {
-  const post = postsCache.find((p) => p.id === id);
-  if (post) {
-    alert(JSON.stringify(post, null, 2));
-  }
-};
 
 // Form Handlers
 formLogin.addEventListener('submit', async (e) => {
@@ -382,36 +387,38 @@ window.deletePost = async function(id) {
   }
 };
 
-// Token Lifecycle Handlers
-btnTriggerRefresh.addEventListener('click', async () => {
-  if (!refreshToken) {
-    setStatus('No refresh token present in session. Please sign in.', true);
-    return;
-  }
-
-  try {
-    const res = await fetch(`${AUTH_URL}/refresh`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken }),
-    });
-    const data = await res.json();
-
-    if (!res.ok) {
-      setStatus(`Token refresh rejected: ${data.error}`, true);
+// Token Lifecycle Handlers (if present)
+if (btnTriggerRefresh) {
+  btnTriggerRefresh.addEventListener('click', async () => {
+    if (!refreshToken) {
+      setStatus('No refresh token present in session. Please sign in.', true);
       return;
     }
 
-    accessToken = data.accessToken;
-    localStorage.setItem('accessToken', accessToken);
-    updateAuthState();
-    setStatus('Access token rotated successfully via Auth Server (:4000).');
-  } catch (err) {
-    setStatus(`Refresh error: ${err.message}`, true);
-  }
-});
+    try {
+      const res = await fetch(`${AUTH_URL}/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      });
+      const data = await res.json();
 
-btnTriggerLogout.addEventListener('click', async () => {
+      if (!res.ok) {
+        setStatus(`Token refresh rejected: ${data.error}`, true);
+        return;
+      }
+
+      accessToken = data.accessToken;
+      localStorage.setItem('accessToken', accessToken);
+      updateAuthState();
+      setStatus('Access token rotated successfully via Auth Server (:4000).');
+    } catch (err) {
+      setStatus(`Refresh error: ${err.message}`, true);
+    }
+  });
+}
+
+async function performLogout() {
   try {
     if (refreshToken) {
       await fetch(`${AUTH_URL}/logout`, {
@@ -431,20 +438,21 @@ btnTriggerLogout.addEventListener('click', async () => {
     setStatus('Logged out. Refresh token revoked on Auth Server.');
     fetchPosts();
   }
-});
+}
+
+if (btnTriggerLogout) {
+  btnTriggerLogout.addEventListener('click', performLogout);
+}
 
 // UI Toggles & Nav
 btnNavAuth.addEventListener('click', () => {
   if (currentUser) {
-    btnTriggerLogout.click();
+    performLogout();
   } else {
     document.getElementById('interactive-workspace').scrollIntoView({ behavior: 'smooth' });
   }
 });
 
-ctaActionPanel.addEventListener('click', () => {
-  document.getElementById('interactive-workspace').scrollIntoView({ behavior: 'smooth' });
-});
 
 tabLogin.addEventListener('click', () => {
   tabLogin.classList.add('active');
@@ -461,6 +469,16 @@ tabRegister.addEventListener('click', () => {
 });
 
 function switchView(view) {
+  if (view === 'mine' && !accessToken) {
+    setStatus('Please sign in to view your personal dispatches.', true);
+    document.getElementById('interactive-workspace').scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => {
+      const loginInput = document.getElementById('login-username');
+      if (loginInput) loginInput.focus();
+    }, 400);
+    return;
+  }
+
   currentView = view;
   if (view === 'all') {
     btnFilterAll.classList.add('active');
@@ -476,6 +494,7 @@ function switchView(view) {
     feedHeadingText.textContent = 'My Personal Dispatches';
   }
   fetchPosts();
+  document.getElementById('feed-section').scrollIntoView({ behavior: 'smooth' });
 }
 
 btnFilterAll.addEventListener('click', () => switchView('all'));
@@ -486,11 +505,15 @@ navCompose.addEventListener('click', () => {
   document.getElementById('interactive-workspace').scrollIntoView({ behavior: 'smooth' });
 });
 
-btnFilterRoles.addEventListener('click', () => {
-  document.querySelector('.footer-wrapper').scrollIntoView({ behavior: 'smooth' });
+btnRefreshFeed.addEventListener('click', async () => {
+  btnRefreshFeed.style.opacity = '0.5';
+  setStatus('Refreshing dispatches from Blog API (:5000)...');
+  await fetchPosts();
+  setTimeout(() => {
+    btnRefreshFeed.style.opacity = '1';
+    setStatus('Dispatches feed up to date.');
+  }, 400);
 });
-
-btnRefreshFeed.addEventListener('click', fetchPosts);
 
 // Init
 updateAuthState();
