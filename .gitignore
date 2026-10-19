@@ -5,7 +5,4 @@ node_modules/
 !.env.sample  
 
 
-PORT=3000
-JWT_SECRET=replace_me_with_output_of_randomBytes 
-JWT_EXPIRES_IN=1h
 
