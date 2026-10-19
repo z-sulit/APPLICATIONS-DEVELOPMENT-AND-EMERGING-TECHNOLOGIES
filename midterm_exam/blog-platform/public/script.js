@@ -1,45 +1,75 @@
-// Blogbloblog Client Controller
+// Blogbloblog Bento Client Controller
 const AUTH_URL = 'http://localhost:4000';
 const BLOG_URL = window.location.port === '5000' ? '' : 'http://localhost:5000';
 
 let currentUser = null; // { id, username, role }
-let accessToken = sessionStorage.getItem('accessToken') || '';
-let refreshToken = sessionStorage.getItem('refreshToken') || '';
+let accessToken = localStorage.getItem('accessToken') || '';
+let refreshToken = localStorage.getItem('refreshToken') || '';
 let currentView = 'all'; // 'all' or 'mine'
 let postsCache = [];
 
-// DOM Elements
-const banner = document.getElementById('status-banner');
-const userDisplay = document.getElementById('user-display');
-const btnAuthToggle = document.getElementById('btn-auth-toggle');
-const btnRefreshToken = document.getElementById('btn-refresh-token');
-const btnLogout = document.getElementById('btn-logout');
-const authCard = document.getElementById('auth-card');
-const postCard = document.getElementById('post-card');
-const postCardTitle = document.getElementById('post-card-title');
-const btnSubmitPost = document.getElementById('btn-submit-post');
-const btnCancelEdit = document.getElementById('btn-cancel-edit');
-const editPostIdInput = document.getElementById('edit-post-id');
-const postTitleInput = document.getElementById('post-title');
-const postContentInput = document.getElementById('post-content');
-const dispatchesFeed = document.getElementById('dispatches-feed');
-const filterAll = document.getElementById('filter-all');
-const filterMine = document.getElementById('filter-mine');
-const feedTitle = document.getElementById('feed-title');
+// DOM References
+const systemDot = document.getElementById('system-dot');
+const systemStatusText = document.getElementById('system-status-text');
+const tokenStatusPill = document.getElementById('token-status-pill');
+const roleStatusPill = document.getElementById('role-status-pill');
 
-// Tabs in Auth Card
+const navUsername = document.getElementById('nav-username');
+const navUserRole = document.getElementById('nav-user-role');
+const btnNavAuth = document.getElementById('btn-nav-auth');
+const navAuthLabel = document.getElementById('nav-auth-label');
+
+const navAll = document.getElementById('nav-all');
+const navMine = document.getElementById('nav-mine');
+const navCompose = document.getElementById('nav-compose');
+
+const ctaActionPanel = document.getElementById('cta-action-panel');
+const ctaActionLabel = document.getElementById('cta-action-label');
+
+const panelTabbedHeader = document.getElementById('panel-tabbed-header');
 const tabLogin = document.getElementById('tab-login');
 const tabRegister = document.getElementById('tab-register');
 const formLogin = document.getElementById('form-login');
 const formRegister = document.getElementById('form-register');
+const formEditor = document.getElementById('form-editor');
+const readerNotice = document.getElementById('reader-notice');
 
-function showBanner(message, type = 'success') {
-  banner.textContent = message;
-  banner.className = `status-banner ${type}`;
+const editorTitle = document.getElementById('editor-title');
+const editPostId = document.getElementById('edit-post-id');
+const editorPostTitle = document.getElementById('editor-post-title');
+const editorPostContent = document.getElementById('editor-post-content');
+const btnSubmitDispatch = document.getElementById('btn-submit-dispatch');
+const btnEditorLabel = document.getElementById('btn-editor-label');
+const btnCancelEdit = document.getElementById('btn-cancel-edit');
+
+const btnFilterAll = document.getElementById('btn-filter-all');
+const btnFilterMine = document.getElementById('btn-filter-mine');
+const btnFilterRoles = document.getElementById('btn-filter-roles');
+
+const feedHeadingText = document.getElementById('feed-heading-text');
+const btnRefreshFeed = document.getElementById('btn-refresh-feed');
+const dispatchesGrid = document.getElementById('dispatches-bento-grid');
+
+const claimUserVal = document.getElementById('claim-user-val');
+const claimRoleVal = document.getElementById('claim-role-val');
+const claimIdVal = document.getElementById('claim-id-val');
+const claimExpVal = document.getElementById('claim-exp-val');
+
+const btnTriggerRefresh = document.getElementById('btn-trigger-refresh');
+const btnTriggerLogout = document.getElementById('btn-trigger-logout');
+
+function setStatus(message, isError = false) {
+  systemStatusText.textContent = message;
+  systemStatusText.style.color = isError ? 'var(--color-red)' : 'var(--text-white)';
+  systemDot.style.backgroundColor = isError ? 'var(--color-red)' : 'var(--color-green)';
+  systemDot.style.boxShadow = isError ? '0 0 8px rgba(239, 68, 68, 0.8)' : '0 0 8px rgba(34, 197, 94, 0.6)';
+
   setTimeout(() => {
-    banner.className = 'status-banner';
-    banner.textContent = '';
-  }, 5000);
+    systemStatusText.textContent = 'Connected to Auth (:4000) & Blog API (:5000)';
+    systemStatusText.style.color = 'var(--text-white)';
+    systemDot.style.backgroundColor = 'var(--color-green)';
+    systemDot.style.boxShadow = '0 0 8px rgba(34, 197, 94, 0.6)';
+  }, 6000);
 }
 
 function parseJwt(token) {
@@ -62,37 +92,79 @@ function updateAuthState() {
   if (accessToken) {
     const decoded = parseJwt(accessToken);
     if (decoded && decoded.exp * 1000 > Date.now()) {
-      currentUser = { id: decoded.id, username: decoded.username, role: decoded.role };
-      userDisplay.textContent = `[${currentUser.username} (${currentUser.role})]`;
-      btnAuthToggle.classList.add('hidden');
-      btnRefreshToken.classList.remove('hidden');
-      btnLogout.classList.remove('hidden');
-      filterMine.classList.remove('hidden');
-      authCard.classList.add('hidden');
+      currentUser = { id: decoded.id, username: decoded.username, role: decoded.role, exp: decoded.exp };
+      
+      // Top status & nav badges
+      tokenStatusPill.textContent = 'Token: Active (15m)';
+      roleStatusPill.textContent = `Role: ${currentUser.role}`;
+      navUsername.textContent = currentUser.username;
+      navUserRole.textContent = currentUser.role;
+      navAuthLabel.textContent = 'Log Out';
+
+      // Claims drawer
+      claimUserVal.textContent = currentUser.username;
+      claimRoleVal.textContent = currentUser.role;
+      claimIdVal.textContent = `#${currentUser.id}`;
+      claimExpVal.textContent = new Date(currentUser.exp * 1000).toLocaleTimeString();
+
+      // Workspace slot based on role
+      panelTabbedHeader.classList.add('hidden');
+      formLogin.classList.add('hidden');
+      formRegister.classList.add('hidden');
+
+      if (currentUser.role === 'reader') {
+        formEditor.classList.add('hidden');
+        readerNotice.classList.remove('hidden');
+        ctaActionLabel.textContent = 'Active Reader';
+      } else {
+        readerNotice.classList.add('hidden');
+        formEditor.classList.remove('hidden');
+        ctaActionLabel.textContent = 'Write Dispatch';
+      }
       return;
     }
   }
 
-  // Guest state
+  // Guest State
   currentUser = null;
   accessToken = '';
-  sessionStorage.removeItem('accessToken');
-  userDisplay.textContent = '[Guest]';
-  btnAuthToggle.classList.remove('hidden');
-  btnRefreshToken.classList.add('hidden');
-  btnLogout.classList.add('hidden');
-  filterMine.classList.add('hidden');
+  localStorage.removeItem('accessToken');
+
+  tokenStatusPill.textContent = 'Token: Guest';
+  roleStatusPill.textContent = 'Role: None';
+  navUsername.textContent = 'Guest';
+  navUserRole.textContent = 'Guest';
+  navAuthLabel.textContent = 'Log In';
+
+  claimUserVal.textContent = 'None (Guest)';
+  claimRoleVal.textContent = 'None';
+  claimIdVal.textContent = '—';
+  claimExpVal.textContent = '—';
+
+  // Workspace shows Login/Register
+  panelTabbedHeader.classList.remove('hidden');
+  readerNotice.classList.add('hidden');
+  formEditor.classList.add('hidden');
+  tabLogin.click();
+  ctaActionLabel.textContent = 'Write / Sign In';
+
   if (currentView === 'mine') {
     switchView('all');
   }
 }
 
+// Fetch Posts from Blog API
 async function fetchPosts() {
   try {
     let url = `${BLOG_URL}/api/posts`;
     const headers = {};
 
     if (currentView === 'mine') {
+      if (!accessToken) {
+        setStatus('Log in required to view your personal dispatches.', true);
+        switchView('all');
+        return;
+      }
       url = `${BLOG_URL}/api/me/posts`;
       headers['Authorization'] = `Bearer ${accessToken}`;
     }
@@ -101,42 +173,53 @@ async function fetchPosts() {
     const data = await res.json();
 
     if (!res.ok) {
-      showBanner(data.error || 'Failed to fetch dispatches', 'error');
+      setStatus(`Blog API error: ${data.error || 'Failed to fetch'}`, true);
       return;
     }
 
     postsCache = data;
     renderPosts(data);
   } catch (err) {
-    showBanner(`Network error: ${err.message}`, 'error');
+    setStatus(`Network error connecting to Blog API: ${err.message}`, true);
   }
 }
 
 function renderPosts(posts) {
   if (!posts || posts.length === 0) {
-    dispatchesFeed.innerHTML = '<div class="empty-state">No dispatches published yet.</div>';
+    dispatchesGrid.innerHTML = `
+      <div class="empty-state-bento">
+        <p style="font-size: 1.125rem; font-weight: 600; margin-bottom: 6px;">No dispatches published yet</p>
+        <p style="font-size: 0.875rem;">Log in as an <strong>author</strong> or <strong>admin</strong> to publish the first dispatch.</p>
+      </div>
+    `;
     return;
   }
 
-  dispatchesFeed.innerHTML = posts
+  dispatchesGrid.innerHTML = posts
     .map((post) => {
-      const canEdit = currentUser && (currentUser.id === post.user_id || currentUser.role === 'admin');
-      const canDelete = currentUser && currentUser.role === 'admin';
+      const isOwner = currentUser && currentUser.id === post.user_id;
+      const isAdmin = currentUser && currentUser.role === 'admin';
+      const canEdit = isOwner || isAdmin;
+      const canDelete = isAdmin;
 
       return `
-      <article class="post-card" data-id="${post.id}">
-        <h3 class="post-title">${escapeHtml(post.title)}</h3>
-        <p class="post-body">${escapeHtml(post.content)}</p>
-        <div class="post-meta">
-          <span class="author-tag">Author ID: ${post.user_id}</span>
-          ${canEdit || canDelete ? '<span class="post-separator">|</span>' : ''}
-          <div class="post-actions">
-            ${canEdit ? `<button class="btn-sm btn-edit" onclick="startEditPost(${post.id})">[Edit]</button>` : ''}
-            ${canDelete ? `<button class="btn-sm btn-danger btn-delete" onclick="deletePost(${post.id})">[Delete]</button>` : ''}
+      <article class="post-bento-card" data-id="${post.id}">
+        <div class="card-header-band">
+          <span>POST #${post.id}</span>
+          <span>AUTHOR ID: ${post.user_id}</span>
+        </div>
+        <div class="card-content-body">
+          <span class="author-pill-tag">Dispatch</span>
+          <h3 class="post-card-title">${escapeHtml(post.title)}</h3>
+          <p class="post-card-excerpt">${escapeHtml(post.content)}</p>
+          <div class="card-footer-actions">
+            ${canEdit ? `<button class="action-link" onclick="startEditPost(${post.id})">Edit Post</button>` : ''}
+            ${canDelete ? `<button class="action-link action-link-danger" onclick="deletePost(${post.id})">Delete Post</button>` : ''}
+            <button class="action-link" style="color: var(--text-muted);" onclick="viewPostJson(${post.id})">View JSON</button>
           </div>
         </div>
       </article>
-    `;
+      `;
     })
     .join('');
 }
@@ -147,7 +230,14 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// Auth handlers
+window.viewPostJson = function(id) {
+  const post = postsCache.find((p) => p.id === id);
+  if (post) {
+    alert(JSON.stringify(post, null, 2));
+  }
+};
+
+// Form Handlers
 formLogin.addEventListener('submit', async (e) => {
   e.preventDefault();
   const username = document.getElementById('login-username').value;
@@ -162,20 +252,20 @@ formLogin.addEventListener('submit', async (e) => {
     const data = await res.json();
 
     if (!res.ok) {
-      showBanner(data.error || 'Login failed', 'error');
+      setStatus(`Login rejected: ${data.error}`, true);
       return;
     }
 
     accessToken = data.accessToken;
     refreshToken = data.refreshToken;
-    sessionStorage.setItem('accessToken', accessToken);
-    sessionStorage.setItem('refreshToken', refreshToken);
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
 
     updateAuthState();
-    showBanner(`Welcome back, ${currentUser.username}!`);
+    setStatus(`Authenticated as ${currentUser.username} (${currentUser.role})`);
     fetchPosts();
   } catch (err) {
-    showBanner(`Login failed: ${err.message}`, 'error');
+    setStatus(`Login network error: ${err.message}`, true);
   }
 });
 
@@ -194,21 +284,108 @@ formRegister.addEventListener('submit', async (e) => {
     const data = await res.json();
 
     if (!res.ok) {
-      showBanner(data.error || 'Registration failed', 'error');
+      setStatus(`Registration rejected: ${data.error}`, true);
       return;
     }
 
-    showBanner('Registration successful! Please log in with your credentials.');
+    setStatus(`User ${username} registered successfully! You may now sign in.`);
     tabLogin.click();
     document.getElementById('login-username').value = username;
   } catch (err) {
-    showBanner(`Registration failed: ${err.message}`, 'error');
+    setStatus(`Registration error: ${err.message}`, true);
   }
 });
 
-btnRefreshToken.addEventListener('click', async () => {
+// Post Create / Update
+formEditor.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!accessToken) {
+    setStatus('Authentication required to publish dispatches.', true);
+    return;
+  }
+
+  const id = editPostId.value;
+  const title = editorPostTitle.value;
+  const content = editorPostContent.value;
+
+  try {
+    const url = id ? `${BLOG_URL}/api/posts/${id}` : `${BLOG_URL}/api/posts`;
+    const method = id ? 'PUT' : 'POST';
+
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ title, content }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      setStatus(`Blog API rejected: ${data.error}`, true);
+      return;
+    }
+
+    setStatus(id ? `Dispatch #${id} updated!` : 'New dispatch published to Blog API (:5000)!');
+    resetEditor();
+    fetchPosts();
+  } catch (err) {
+    setStatus(`Publish error: ${err.message}`, true);
+  }
+});
+
+window.startEditPost = function(id) {
+  const post = postsCache.find((p) => p.id === id);
+  if (!post) return;
+
+  editPostId.value = post.id;
+  editorPostTitle.value = post.title;
+  editorPostContent.value = post.content;
+  editorTitle.textContent = `Edit Dispatch #${post.id}`;
+  btnEditorLabel.textContent = 'Save Changes to Blog API';
+  btnCancelEdit.style.display = 'inline';
+
+  document.getElementById('interactive-workspace').scrollIntoView({ behavior: 'smooth' });
+};
+
+function resetEditor() {
+  editPostId.value = '';
+  editorPostTitle.value = '';
+  editorPostContent.value = '';
+  editorTitle.textContent = 'Compose Dispatch';
+  btnEditorLabel.textContent = 'Publish to Blog API (:5000)';
+  btnCancelEdit.style.display = 'none';
+}
+
+btnCancelEdit.addEventListener('click', resetEditor);
+
+window.deletePost = async function(id) {
+  if (!confirm(`Are you sure you want to permanently delete Dispatch #${id}?`)) return;
+
+  try {
+    const res = await fetch(`${BLOG_URL}/api/posts/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      setStatus(`Delete error: ${data.error}`, true);
+      return;
+    }
+
+    setStatus(`Dispatch #${id} deleted successfully from Blog API.`);
+    fetchPosts();
+  } catch (err) {
+    setStatus(`Delete error: ${err.message}`, true);
+  }
+};
+
+// Token Lifecycle Handlers
+btnTriggerRefresh.addEventListener('click', async () => {
   if (!refreshToken) {
-    showBanner('No refresh token available. Please log in again.', 'error');
+    setStatus('No refresh token present in session. Please sign in.', true);
     return;
   }
 
@@ -221,20 +398,20 @@ btnRefreshToken.addEventListener('click', async () => {
     const data = await res.json();
 
     if (!res.ok) {
-      showBanner(data.error || 'Token refresh failed', 'error');
+      setStatus(`Token refresh rejected: ${data.error}`, true);
       return;
     }
 
     accessToken = data.accessToken;
-    sessionStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('accessToken', accessToken);
     updateAuthState();
-    showBanner('Access Token refreshed successfully!');
+    setStatus('Access token rotated successfully via Auth Server (:4000).');
   } catch (err) {
-    showBanner(`Token refresh failed: ${err.message}`, 'error');
+    setStatus(`Refresh error: ${err.message}`, true);
   }
 });
 
-btnLogout.addEventListener('click', async () => {
+btnTriggerLogout.addEventListener('click', async () => {
   try {
     if (refreshToken) {
       await fetch(`${AUTH_URL}/logout`, {
@@ -246,138 +423,27 @@ btnLogout.addEventListener('click', async () => {
   } catch (err) {
     console.error('Logout error:', err);
   } finally {
-    sessionStorage.removeItem('accessToken');
-    sessionStorage.removeItem('refreshToken');
     accessToken = '';
     refreshToken = '';
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
     updateAuthState();
-    showBanner('Logged out successfully.');
+    setStatus('Logged out. Refresh token revoked on Auth Server.');
     fetchPosts();
   }
 });
 
-// Post creation / update
-document.getElementById('form-post').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  if (!accessToken) {
-    showBanner('You must be logged in to post.', 'error');
-    authCard.classList.remove('hidden');
-    return;
-  }
-
-  const editId = editPostIdInput.value;
-  const title = postTitleInput.value;
-  const content = postContentInput.value;
-
-  try {
-    let url = `${BLOG_URL}/api/posts`;
-    let method = 'POST';
-
-    if (editId) {
-      url = `${BLOG_URL}/api/posts/${editId}`;
-      method = 'PUT';
-    }
-
-    const res = await fetch(url, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ title, content }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      showBanner(data.error || 'Failed to save post', 'error');
-      return;
-    }
-
-    showBanner(editId ? 'Post updated successfully!' : 'Dispatch published successfully!');
-    resetPostForm();
-    postCard.classList.add('hidden');
-    fetchPosts();
-  } catch (err) {
-    showBanner(`Post error: ${err.message}`, 'error');
+// UI Toggles & Nav
+btnNavAuth.addEventListener('click', () => {
+  if (currentUser) {
+    btnTriggerLogout.click();
+  } else {
+    document.getElementById('interactive-workspace').scrollIntoView({ behavior: 'smooth' });
   }
 });
 
-window.startEditPost = function (id) {
-  const post = postsCache.find((p) => p.id === id);
-  if (!post) return;
-
-  editPostIdInput.value = post.id;
-  postTitleInput.value = post.title;
-  postContentInput.value = post.content;
-  postCardTitle.textContent = `Edit Dispatch #${post.id}`;
-  btnSubmitPost.textContent = 'Update Dispatch';
-  btnCancelEdit.classList.remove('hidden');
-  postCard.classList.remove('hidden');
-  postCard.scrollIntoView({ behavior: 'smooth' });
-};
-
-window.deletePost = async function (id) {
-  if (!confirm('Are you sure you want to delete this dispatch?')) return;
-
-  try {
-    const res = await fetch(`${BLOG_URL}/api/posts/${id}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      showBanner(data.error || 'Failed to delete post', 'error');
-      return;
-    }
-
-    showBanner(data.message || 'Post deleted successfully!');
-    fetchPosts();
-  } catch (err) {
-    showBanner(`Delete error: ${err.message}`, 'error');
-  }
-};
-
-function resetPostForm() {
-  editPostIdInput.value = '';
-  postTitleInput.value = '';
-  postContentInput.value = '';
-  postCardTitle.textContent = 'Publish Blogbloblog Post Form';
-  btnSubmitPost.textContent = 'Publish Dispatch';
-  btnCancelEdit.classList.add('hidden');
-}
-
-btnCancelEdit.addEventListener('click', resetPostForm);
-
-// UI Toggles & Views
-btnAuthToggle.addEventListener('click', () => {
-  authCard.classList.toggle('hidden');
-});
-
-document.getElementById('btn-close-auth').addEventListener('click', () => {
-  authCard.classList.add('hidden');
-});
-
-document.getElementById('nav-new-blog').addEventListener('click', (e) => {
-  e.preventDefault();
-  if (!accessToken) {
-    showBanner('Please log in as an Author or Admin to create posts.', 'error');
-    authCard.classList.remove('hidden');
-    return;
-  }
-  resetPostForm();
-  postCard.classList.toggle('hidden');
-  if (!postCard.classList.contains('hidden')) {
-    postCard.scrollIntoView({ behavior: 'smooth' });
-  }
-});
-
-document.getElementById('btn-close-post').addEventListener('click', () => {
-  postCard.classList.add('hidden');
+ctaActionPanel.addEventListener('click', () => {
+  document.getElementById('interactive-workspace').scrollIntoView({ behavior: 'smooth' });
 });
 
 tabLogin.addEventListener('click', () => {
@@ -397,20 +463,34 @@ tabRegister.addEventListener('click', () => {
 function switchView(view) {
   currentView = view;
   if (view === 'all') {
-    filterAll.classList.add('active');
-    filterMine.classList.remove('active');
-    feedTitle.textContent = 'All Dispatches';
+    btnFilterAll.classList.add('active');
+    btnFilterMine.classList.remove('active');
+    navAll.classList.add('active');
+    navMine.classList.remove('active');
+    feedHeadingText.textContent = 'Our Dispatches';
   } else {
-    filterMine.classList.add('active');
-    filterAll.classList.remove('active');
-    feedTitle.textContent = 'My Dispatches';
+    btnFilterMine.classList.add('active');
+    btnFilterAll.classList.remove('active');
+    navMine.classList.add('active');
+    navAll.classList.remove('active');
+    feedHeadingText.textContent = 'My Personal Dispatches';
   }
   fetchPosts();
 }
 
-filterAll.addEventListener('click', () => switchView('all'));
-filterMine.addEventListener('click', () => switchView('mine'));
-document.getElementById('btn-refresh-feed').addEventListener('click', fetchPosts);
+btnFilterAll.addEventListener('click', () => switchView('all'));
+btnFilterMine.addEventListener('click', () => switchView('mine'));
+navAll.addEventListener('click', () => switchView('all'));
+navMine.addEventListener('click', () => switchView('mine'));
+navCompose.addEventListener('click', () => {
+  document.getElementById('interactive-workspace').scrollIntoView({ behavior: 'smooth' });
+});
+
+btnFilterRoles.addEventListener('click', () => {
+  document.querySelector('.footer-wrapper').scrollIntoView({ behavior: 'smooth' });
+});
+
+btnRefreshFeed.addEventListener('click', fetchPosts);
 
 // Init
 updateAuthState();

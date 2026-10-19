@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BLOGBLOBLOG — 12-Column Bento System</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- 1. Top System Status Bar: 45px Sticky -->
+  <aside class="system-status-bar">
+    <div class="max-w-canvas system-status-inner">
+      <div class="status-indicator-group">
+        <span class="live-dot" id="system-dot"></span>
+        <span class="status-banner-text" id="system-status-text">Connected to Auth (:4000) & Blog API (:5000)</span>
+      </div>
+      <div class="status-indicator-group">
+        <span class="status-badge-token" id="token-status-pill">Token: Guest</span>
+        <span class="status-badge-token" id="role-status-pill">Role: None</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 2. Navbar: Fixed/Sticky 81px -->
+  <header class="navbar-wrapper">
+    <div class="max-w-canvas navbar">
+      <a href="#" class="brand-mark">
+        <span>BLOGBLOBLOG</span>
+      </a>
+
+      <ul class="nav-links-center">
+        <li><button class="nav-link-btn active" id="nav-all">All Dispatches</button></li>
+        <li><button class="nav-link-btn" id="nav-mine">My Dispatches</button></li>
+        <li><button class="nav-link-btn" id="nav-compose">Create Post</button></li>
+      </ul>
+
+      <div class="nav-right-slot">
+        <div class="user-identity-badge" id="nav-user-badge">
+          <span id="nav-username">Guest</span>
+          <span class="role-pill-indicator" id="nav-user-role">Guest</span>
+        </div>
+        <button class="btn-arrow-action" id="btn-nav-auth">
+          <span id="nav-auth-label">Log In</span>
+          <span class="arrow-box-sm">→</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-canvas">
+
+    <!-- 3. Hero & Workspace Bento (12-Column Split Grid) -->
+    <section class="section-spacer hero-bento-grid">
+      <!-- Col 1-7: Dark Primary Hero Card -->
+      <article class="hero-primary-card">
+        <div class="hero-title-block">
+          <h1>BLOGBLOBLOG</h1>
+          <p>Everything, All At Once. A decoupled, distributed micro-blog architecture powered by dual Express servers and stateless JWT tokens.</p>
+        </div>
+
+        <div class="hero-cta-subgrid">
+          <a href="#feed-section" class="bento-cta-card" id="cta-read">
+            <span class="cta-card-label">Read Dispatches</span>
+            <span class="arrow-box-lg">→</span>
+          </a>
+          <div class="bento-cta-card" id="cta-action-panel">
+            <span class="cta-card-label" id="cta-action-label">Write / Sign In</span>
+            <span class="arrow-box-lg">↗</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Col 8-12: Interactive Panel -->
+      <aside class="hero-interactive-card" id="interactive-workspace">
+        <!-- Tabbed Header for Guest Mode -->
+        <div class="panel-header-tabbed" id="panel-tabbed-header">
+          <div class="panel-tabs-pill">
+            <button class="panel-tab-btn active" id="tab-login">Log In</button>
+            <button class="panel-tab-btn" id="tab-register">Register</button>
+          </div>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">Auth Server :4000</span>
+        </div>
+
+        <!-- Slot A: Login Form -->
+        <form id="form-login" class="form-stack">
+          <div class="form-field">
+            <label class="form-label" for="login-username">Username</label>
+            <input type="text" id="login-username" class="form-input" required placeholder="e.g. author1">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="login-password">Password</label>
+            <input type="password" id="login-password" class="form-input" required placeholder="Enter your password">
+          </div>
+          <button type="submit" class="btn-bento-primary">
+            <span>Sign In to Account</span>
+            <span>→</span>
+          </button>
+        </form>
+
+        <!-- Slot B: Register Form -->
+        <form id="form-register" class="form-stack hidden">
+          <div class="form-field">
+            <label class="form-label" for="reg-username">Username</label>
+            <input type="text" id="reg-username" class="form-input" required placeholder="Choose a handle">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="reg-password">Password</label>
+            <input type="password" id="reg-password" class="form-input" required placeholder="Choose a password">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="reg-role">Role Permission</label>
+            <select id="reg-role" class="form-input">
+              <option value="reader">Reader (Read-Only)</option>
+              <option value="author" selected>Author (Read & Create/Edit Own)</option>
+              <option value="admin">Admin (Full System Authority)</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-bento-primary">
+            <span>Create Credentials</span>
+            <span>→</span>
+          </button>
+        </form>
+
+        <!-- Slot C: Post Editor (For Author / Admin) -->
+        <form id="form-editor" class="form-stack hidden">
+          <input type="hidden" id="edit-post-id" value="">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-display); font-weight: 700; font-size: 1.1rem;" id="editor-title">Compose Dispatch</span>
+            <button type="button" class="action-link" id="btn-cancel-edit" style="display: none;">Cancel</button>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="editor-post-title">Headline</label>
+            <input type="text" id="editor-post-title" class="form-input" required placeholder="e.g. The Anatomy of a Distributed Token Refresh">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="editor-post-content">Dispatch Body</label>
+            <textarea id="editor-post-content" class="form-input" rows="4" required placeholder="Write your post content..."></textarea>
+          </div>
+          <button type="submit" class="btn-bento-primary" id="btn-submit-dispatch">
+            <span id="btn-editor-label">Publish to Blog API (:5000)</span>
+            <span>→</span>
+          </button>
+        </form>
+
+        <!-- Slot D: Reader Notice -->
+        <div id="reader-notice" class="form-stack hidden" style="justify-content: center; text-align: center; height: 100%;">
+          <div style="font-size: 2rem;">📖</div>
+          <h3 style="font-family: var(--font-display); font-weight: 700;">Reader Account Active</h3>
+          <p style="font-size: 0.875rem; color: var(--text-muted);">You have read-only privileges. To publish new dispatches, switch to an <strong>author</strong> or <strong>admin</strong> account.</p>
+        </div>
+      </aside>
+    </section>
+
+    <!-- 4. Filter & Role Bar (3-Column Pill Selector Row) -->
+    <section class="section-spacer filter-row-container">
+      <button class="filter-pill-btn active" id="btn-filter-all">
+        <span class="pill-square-indicator">01</span>
+        <span class="filter-pill-title">All Dispatches (Public GET)</span>
+      </button>
+
+      <button class="filter-pill-btn" id="btn-filter-mine">
+        <span class="pill-square-indicator">02</span>
+        <span class="filter-pill-title">My Dispatches (Auth GET)</span>
+      </button>
+
+      <button class="filter-pill-btn" id="btn-filter-roles">
+        <span class="pill-square-indicator">03</span>
+        <span class="filter-pill-title">Role Capabilities Matrix</span>
+      </button>
+    </section>
+
+    <!-- 5. Blog Feed Section ("Our Dispatches" - 12-Column Grid, 3-Up) -->
+    <section class="section-spacer" id="feed-section">
+      <div class="feed-header-row">
+        <div>
+          <h2 class="feed-heading" id="feed-heading-text">Our Dispatches</h2>
+          <p style="color: var(--text-muted); font-size: 0.875rem;">Statelessly verified via SHA-256 HMAC JWT signature</p>
+        </div>
+        <button class="btn-feed-refresh" id="btn-refresh-feed">
+          <span>↻ Refresh Feed</span>
+          <span>→</span>
+        </button>
+      </div>
+
+      <div class="posts-bento-grid" id="dispatches-bento-grid">
+        <div class="empty-state-bento">Loading dispatches from Blog API (:5000)...</div>
+      </div>
+    </section>
+
+    <!-- 6. Nested "Card-in-Card" Container (Token & Session Management) -->
+    <section class="section-spacer nested-session-shell" id="session-drawer">
+      <div class="nested-shell-header">
+        <span>Authentication & Token Lifecycle Drawer</span>
+        <span style="font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 500;">Active Session Monitor</span>
+      </div>
+
+      <div class="nested-shell-body">
+        <div class="inner-session-box">
+          <!-- Col 1: Claims -->
+          <div class="session-claims-column">
+            <h4>Decoded Token Claims</h4>
+            <div class="claims-pills-list">
+              <div class="claim-pill-badge">
+                <span class="claim-dot" id="claim-dot-user"></span>
+                <span>User: <strong id="claim-user-val">None (Guest)</strong></span>
+              </div>
+              <div class="claim-pill-badge">
+                <span class="claim-dot" id="claim-dot-role"></span>
+                <span>Role: <strong id="claim-role-val">None</strong></span>
+              </div>
+              <div class="claim-pill-badge">
+                <span class="claim-dot" id="claim-dot-id"></span>
+                <span>User ID: <strong id="claim-id-val">—</strong></span>
+              </div>
+              <div class="claim-pill-badge">
+                <span class="claim-dot" id="claim-dot-exp"></span>
+                <span>Expires: <strong id="claim-exp-val">—</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 2: Actions -->
+          <div class="session-actions-column">
+            <h4>Token Lifecycle Operations</h4>
+            <button class="btn-session-action" id="btn-trigger-refresh">
+              <span>POST /refresh (Rotate 15m Token)</span>
+              <span>↻</span>
+            </button>
+            <button class="btn-session-action btn-session-danger" id="btn-trigger-logout">
+              <span>POST /logout (Revoke Refresh Token)</span>
+              <span>✕</span>
+            </button>
+            <p style="font-size: 0.75rem; color: var(--text-white-muted); margin-top: 4px;">
+              Both operations communicate directly with Auth Server (:4000). The Blog API (:5000) statelessly verifies issued access tokens without querying the Auth Server.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 7. Rounded-Top Footer Block (5-Column) -->
+  <footer class="footer-wrapper">
+    <div class="max-w-canvas">
+      <div class="footer-inner-surface">
+        <div class="footer-col footer-brand">
+          <h4>BLOGBLOBLOG</h4>
+          <p>Dual-server decoupled Express architecture with stateless JWT security.</p>
+        </div>
+
+        <div class="footer-col">
+          <h5>Auth Server (:4000)</h5>
+          <ul>
+            <li><code>POST /register</code></li>
+            <li><code>POST /login</code></li>
+            <li><code>POST /refresh</code></li>
+            <li><code>POST /logout</code></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Blog API (:5000)</h5>
+          <ul>
+            <li><code>GET /api/posts</code></li>
+            <li><code>GET /api/posts/:id</code></li>
+            <li><code>POST /api/posts</code></li>
+            <li><code>PUT /api/posts/:id</code></li>
+            <li><code>DELETE /api/posts/:id</code></li>
+            <li><code>GET /api/me/posts</code></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Role Matrix</h5>
+          <ul>
+            <li><strong>reader:</strong> Public Read</li>
+            <li><strong>author:</strong> Read + Create/Edit Own</li>
+            <li><strong>admin:</strong> Full Read + Write + Delete</li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>System Specs</h5>
+          <ul>
+            <li>JWT Secret: SHA-256 HMAC</li>
+            <li>Access TTL: 15 Minutes</li>
+            <li>Refresh TTL: 7 Days</li>
+            <li>Persistence: localStorage Sync</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
