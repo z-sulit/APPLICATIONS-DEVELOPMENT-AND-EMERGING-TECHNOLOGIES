@@ -1,8 +1,7 @@
-const crypto = require('crypto');
+const crypto = require('crypto'); //cryptographic functions for hashing and secure comparisons
 const localStorage = require('./storage');
 
 const STORAGE_KEY = 'users';
-
 let users = [];
 
 function loadFromStorage() {
@@ -20,6 +19,7 @@ function loadFromStorage() {
   }
 }
 
+// Save the current users array to localStorage
 function syncToStorage() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
 }
@@ -27,18 +27,24 @@ function syncToStorage() {
 // Initial load
 loadFromStorage();
 
+
+// generate a random salt, hash the password with scryptSync, and returns a string in the format "salt:hash"
 function hashPassword(password) {
   const salt = crypto.randomBytes(16).toString('hex');
   const hash = crypto.scryptSync(password, salt, 64).toString('hex');
   return `${salt}:${hash}`;
 }
-
+//if missing database record is missing the colon separator, fial verification
 function verifyPassword(password, storedPassword) {
   if (!storedPassword || typeof storedPassword !== 'string') return false;
   const parts = storedPassword.split(':');
   if (parts.length !== 2) return false;
+
+
   const [salt, originalHash] = parts;
   const hash = crypto.scryptSync(password, salt, 64).toString('hex');
+
+  // convert both hashes to buffers, examine lenghts
   const hashBuffer = Buffer.from(hash, 'hex');
   const originalBuffer = Buffer.from(originalHash, 'hex');
   if (hashBuffer.length !== originalBuffer.length) return false;
