@@ -21,7 +21,6 @@ app.use(express.json());
 
 // Serve static frontend assets from public/ folder
 app.use(express.static(path.resolve(__dirname, '../../public')));
-app.use(express.static(path.resolve(__dirname, '../public')));
 
 // API Routes
 app.use('/api', postRoutes);

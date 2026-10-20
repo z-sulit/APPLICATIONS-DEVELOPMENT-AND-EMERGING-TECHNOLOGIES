@@ -6,7 +6,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 if (!process.env.JWT_SECRET) {
   console.error('Fatal Error: JWT_SECRET is not defined in the environment.');
-  process.exit(1);
+  process.exit(1); //0 clean, 1 due to failure
 }
 
 const app = require('./src/app');
