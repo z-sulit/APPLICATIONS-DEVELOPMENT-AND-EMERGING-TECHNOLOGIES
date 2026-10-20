@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 // JSON body parser
 app.use(express.json());
 
-// Auth routes
+// Mounts the Auth routes
 app.use('/', authRoutes);
 
 // 404 Route Not Found handler
