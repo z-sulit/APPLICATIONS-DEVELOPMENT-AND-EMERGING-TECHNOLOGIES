@@ -21,7 +21,7 @@ module.exports = (req, res, next) => {
         error: 'Refresh tokens cannot be used to access this resource',
       });
     }
-
+// Attach user info to request object -> middleware & route handlers
     req.user = {
       id: decoded.id,
       username: decoded.username,

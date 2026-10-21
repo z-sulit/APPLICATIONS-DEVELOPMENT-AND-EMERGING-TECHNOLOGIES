@@ -91,7 +91,7 @@ exports.refresh = (req, res, next) => {
     if (decoded.type !== 'refresh') {
       return res.status(401).json({ error: 'Invalid token type' });
     }
-
+// verify if user exists, token matchs one in storage, and token has not been revoked.
     const user = UserModel.findById(decoded.id);
     if (!user || user.refresh_token !== refreshToken || user.revoked_at !== null) {
       return res.status(401).json({ error: 'Invalid, expired, or revoked refresh token' });

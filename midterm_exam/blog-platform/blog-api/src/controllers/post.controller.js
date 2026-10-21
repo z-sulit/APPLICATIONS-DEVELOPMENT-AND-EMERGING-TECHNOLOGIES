@@ -1,6 +1,6 @@
 const PostModel = require('../models/post.model'); //import PostModel
 
-// extracts input and prevents users from submitting empty posts or posts
+// databse read
 exports.getAllPosts = (req, res, next) => {
   try {
     const posts = PostModel.findAll();
@@ -25,6 +25,7 @@ exports.getPostById = (req, res, next) => {
   }
 };
 
+// extracts input and prevents users from submitting empty posts
 exports.createPost = (req, res, next) => {
   try {
     const { title, content } = req.body;
@@ -33,6 +34,8 @@ exports.createPost = (req, res, next) => {
       return res.status(400).json({ error: 'Title and content are required' });
     }
 
+
+// creates new post with user_id, title, and content.
     const newPost = PostModel.create({
       user_id: req.user.id,
       title: String(title).trim(),
@@ -45,6 +48,8 @@ exports.createPost = (req, res, next) => {
   }
 };
 
+
+// checks if post exists and if user is owner or admin before allowing update.
 exports.updatePost = (req, res, next) => {
   try {
     const id = Number(req.params.id);
