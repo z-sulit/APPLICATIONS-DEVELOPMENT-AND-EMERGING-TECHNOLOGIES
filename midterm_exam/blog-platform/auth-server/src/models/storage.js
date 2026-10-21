@@ -12,7 +12,7 @@ function ensureFile() {
     fs.writeFileSync(storageFile, JSON.stringify({}), 'utf-8');
   }
 }
-
+//loc strg obj
 const localStorage = {
   getItem(key) {
     ensureFile();
@@ -25,6 +25,7 @@ const localStorage = {
       return null;
     }
   },
+  // writes the value for the given key to the file, creating or updating it as necessary
   setItem(key, value) {
     ensureFile();
     try {
