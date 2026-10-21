@@ -109,6 +109,7 @@ exports.refresh = (req, res, next) => {
   }
 };
 
+// function that revokes the refresh token, sets it to null, and sets revoked_at to the current timestamp.
 exports.logout = (req, res, next) => {
   try {
     const { refreshToken } = req.body;
