@@ -1,9 +1,10 @@
+
 const localStorage = require('./storage');
-
 const STORAGE_KEY = 'posts';
-
 let posts = [];
+//load storage help, store posts in storage and in memory list to hold all posts.
 
+//reads posts from storage file into memory
 function loadFromStorage() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -18,7 +19,7 @@ function loadFromStorage() {
     posts = [];
   }
 }
-
+//write current memory list to storage file
 function syncToStorage() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
 }
@@ -26,12 +27,13 @@ function syncToStorage() {
 // Initial load
 loadFromStorage();
 
+//get all psots
 const PostModel = {
   findAll() {
     loadFromStorage();
     return posts;
   },
-
+//find post by id, returns null if not found
   findById(id) {
     loadFromStorage();
     return posts.find((p) => p.id === Number(id)) || null;
@@ -41,7 +43,7 @@ const PostModel = {
     loadFromStorage();
     return posts.filter((p) => p.user_id === Number(userId));
   },
-
+//create new post with auto incremented id and save it.
   create({ user_id, title, content }) {
     loadFromStorage();
     const nextId = posts.length > 0 ? Math.max(...posts.map((p) => p.id)) + 1 : 1;
@@ -55,7 +57,7 @@ const PostModel = {
     syncToStorage();
     return newPost;
   },
-
+//for updating title/content of a post 
   update(id, { title, content }) {
     loadFromStorage();
     const post = posts.find((p) => p.id === Number(id));

@@ -4,6 +4,8 @@ const path = require('path');
 const storageDir = path.resolve(__dirname, '../../../data');
 const storageFile = path.resolve(storageDir, 'localStorage.json');
 
+
+//ensures, creates fikder and empy json file if does not exit yet....
 function ensureFile() {
   if (!fs.existsSync(storageDir)) {
     fs.mkdirSync(storageDir, { recursive: true });
@@ -13,6 +15,8 @@ function ensureFile() {
   }
 }
 
+
+//reads and geets a saved value by key from storage file
 const localStorage = {
   getItem(key) {
     ensureFile();
@@ -24,6 +28,8 @@ const localStorage = {
       return null;
     }
   },
+
+  //writes a value for a given key to the storage file, creating or updating it as necessary
   setItem(key, value) {
     ensureFile();
     try {
@@ -35,6 +41,8 @@ const localStorage = {
       console.error('LocalStorage write error:', err);
     }
   },
+
+  //removed a single key-value pair from the storage file
   removeItem(key) {
     ensureFile();
     try {
@@ -46,6 +54,8 @@ const localStorage = {
       console.error('LocalStorage delete error:', err);
     }
   },
+
+  //wipe,...
   clear() {
     ensureFile();
     fs.writeFileSync(storageFile, JSON.stringify({}, null, 2), 'utf-8');
