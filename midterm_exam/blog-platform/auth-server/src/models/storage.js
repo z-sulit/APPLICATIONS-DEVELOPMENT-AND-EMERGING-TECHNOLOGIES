@@ -16,6 +16,7 @@ function ensureFile() {
 const localStorage = {
   getItem(key) {
     ensureFile();
+    // reads the file, parses it, and returns the value for the given key, or null kung not found...
     try {
       const raw = fs.readFileSync(storageFile, 'utf-8');
       const store = JSON.parse(raw || '{}');
