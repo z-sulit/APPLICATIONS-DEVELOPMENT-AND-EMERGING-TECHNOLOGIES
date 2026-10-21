@@ -40,7 +40,7 @@ function verifyPassword(password, storedPassword) {
   const parts = storedPassword.split(':');
   if (parts.length !== 2) return false;
 
-
+//destructure
   const [salt, originalHash] = parts;
   const hash = crypto.scryptSync(password, salt, 64).toString('hex');
 
