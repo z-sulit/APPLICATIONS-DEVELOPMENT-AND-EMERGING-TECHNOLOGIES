@@ -1,3 +1,5 @@
+
+// pass roles & return function para sa roles na yon
 module.exports = function authorize(...allowedRoles) {
   return (req, res, next) => {
     if (!req.user || !allowedRoles.includes(req.user.role)) {

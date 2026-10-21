@@ -2,13 +2,16 @@ const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
   const authHeader = req.headers.authorization;
+//import and extract auth header
 
+
+//Verifies the header exists and follows the standard Bearer <token> format.
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'No token provided' });
   }
-
   const token = authHeader.split(' ')[1];
 
+  // kung saan nangyari si stateless etc.. use jtw_secred to verify token signature and expiration date.
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
