@@ -20,7 +20,7 @@ exports.register = (req, res, next) => {
       return res.status(409).json({ error: 'Username already taken' });
     }
 
-// create new user, newUers.hashed_password excluded, no send back hash back to client...
+// create new user
     const newUser = UserModel.create({ username, password, role });
 
     return res.status(201).json({
