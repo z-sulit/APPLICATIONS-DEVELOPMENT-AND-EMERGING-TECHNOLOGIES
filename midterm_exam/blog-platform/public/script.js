@@ -155,7 +155,7 @@ function updateAuthState() {
   }
 }
 
-// Fetch Posts from Blog API, dets which api endpoint to hit. if clicked on my dispatches, changes url to /api/me/posts + bearertoken
+// Fetch Posts from Blog API, determines which api endpoint to hit. if clicked on my dispatches, changes url to /api/me/posts + bearertoken
 async function fetchPosts() {
   try {
     let url = `${BLOG_URL}/api/posts`;
