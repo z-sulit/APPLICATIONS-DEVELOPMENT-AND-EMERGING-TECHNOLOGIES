@@ -1,10 +1,11 @@
+//import express, postController, authenticate, authorize
 const express = require('express');
 const router = express.Router();
 const postController = require('../controllers/post.controller');
 const authenticate = require('../middleware/authenticate');
 const authorize = require('../middleware/authorize');
 
-// Public routes
+// Public routes (kahit sino maka-veiw)
 router.get('/posts', postController.getAllPosts);
 router.get('/posts/:id', postController.getPostById);
 

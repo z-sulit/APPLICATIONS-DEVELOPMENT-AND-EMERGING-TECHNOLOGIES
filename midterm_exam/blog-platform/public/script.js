@@ -2,13 +2,14 @@
 const AUTH_URL = 'http://localhost:4000';
 const BLOG_URL = window.location.port === '5000' ? '' : 'http://localhost:5000';
 
+//global state
 let currentUser = null; // { id, username, role }
 let accessToken = localStorage.getItem('accessToken') || '';
 let refreshToken = localStorage.getItem('refreshToken') || '';
 let currentView = 'all'; // 'all' or 'mine'
 let postsCache = [];
 
-// DOM References
+// DOM References (map to elements in index.html)
 const systemDot = document.getElementById('system-dot');
 const systemStatusText = document.getElementById('system-status-text');
 const tokenStatusPill = document.getElementById('token-status-pill');
@@ -56,6 +57,7 @@ const claimExpVal = document.getElementById('claim-exp-val');
 const btnTriggerRefresh = document.getElementById('btn-trigger-refresh');
 const btnTriggerLogout = document.getElementById('btn-trigger-logout');
 
+// function that updates the visual status bar at the top of the screen. If isError is true, it changes the UI to red; otherwise, it is green.....
 function setStatus(message, isError = false) {
   systemStatusText.textContent = message;
   systemStatusText.style.color = isError ? 'var(--color-red)' : 'var(--text-white)';
@@ -70,6 +72,7 @@ function setStatus(message, isError = false) {
   }, 6000);
 }
 
+// function that decodes a JWT token and returns the payload as a JavaScript object. If the token is invalid or cannot be decoded, it returns null.
 function parseJwt(token) {
   try {
     const base64Url = token.split('.')[1];
@@ -85,7 +88,7 @@ function parseJwt(token) {
     return null;
   }
 }
-
+// runs on page load and after every login. It decodes the token and checks the expiration (exp).
 function updateAuthState() {
   if (accessToken) {
     const decoded = parseJwt(accessToken);
@@ -152,7 +155,7 @@ function updateAuthState() {
   }
 }
 
-// Fetch Posts from Blog API
+// Fetch Posts from Blog API, dets which api endpoint to hit. if clicked on my dispatches, changes url to /api/me/posts + bearertoken
 async function fetchPosts() {
   try {
     let url = `${BLOG_URL}/api/posts`;
@@ -171,7 +174,7 @@ async function fetchPosts() {
       url = `${BLOG_URL}/api/me/posts`;
       headers['Authorization'] = `Bearer ${accessToken}`;
     }
-
+// isntead of fetching api again, use cached data
     const res = await fetch(url, { headers });
     const data = await res.json();
 
@@ -187,6 +190,7 @@ async function fetchPosts() {
   }
 }
 
+//maps over the array of posts to generate HTML
 function renderPosts(posts) {
   if (!posts || posts.length === 0) {
     if (currentView === 'mine') {
@@ -242,7 +246,7 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// Form Handlers
+// Form Handlers, stops from reloading the page when clicked submit
 formLogin.addEventListener('submit', async (e) => {
   e.preventDefault();
   const username = document.getElementById('login-username').value;
@@ -365,6 +369,7 @@ function resetEditor() {
 
 btnCancelEdit.addEventListener('click', resetEditor);
 
+//sneds a delete request with the attached access token  
 window.deletePost = async function(id) {
   if (!confirm(`Are you sure you want to permanently delete Dispatch #${id}?`)) return;
 
@@ -387,6 +392,9 @@ window.deletePost = async function(id) {
   }
 };
 
+
+
+
 // Token Lifecycle Handlers (if present)
 if (btnTriggerRefresh) {
   btnTriggerRefresh.addEventListener('click', async () => {
@@ -394,7 +402,7 @@ if (btnTriggerRefresh) {
       setStatus('No refresh token present in session. Please sign in.', true);
       return;
     }
-
+// Packages the inputs into JSON and POSTs them to the Auth server.
     try {
       const res = await fetch(`${AUTH_URL}/refresh`, {
         method: 'POST',
@@ -407,7 +415,7 @@ if (btnTriggerRefresh) {
         setStatus(`Token refresh rejected: ${data.error}`, true);
         return;
       }
-
+//if good, extract tokens and save to localstorage (in browser) 
       accessToken = data.accessToken;
       localStorage.setItem('accessToken', accessToken);
       updateAuthState();
