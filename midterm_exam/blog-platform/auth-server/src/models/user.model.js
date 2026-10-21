@@ -1,9 +1,11 @@
 const crypto = require('crypto'); //cryptographic functions for hashing and secure comparisons
 const localStorage = require('./storage');
 
+// lcate user records in your json  file, sets empty array to hold data...
 const STORAGE_KEY = 'users';
 let users = [];
 
+//reads the raw JSON string from file, parses it, a--> user aray.
 function loadFromStorage() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -50,7 +52,7 @@ function verifyPassword(password, storedPassword) {
   if (hashBuffer.length !== originalBuffer.length) return false;
   return crypto.timingSafeEqual(hashBuffer, originalBuffer);
 }
-
+//read ops
 const UserModel = {
   findAll() {
     loadFromStorage();
@@ -72,6 +74,9 @@ const UserModel = {
     return users.find((u) => u.refresh_token === refreshToken) || null;
   },
 
+
+
+
   create({ username, password, role }) {
     loadFromStorage();
     const nextId = users.length > 0 ? Math.max(...users.map((u) => u.id)) + 1 : 1;
@@ -88,7 +93,7 @@ const UserModel = {
     syncToStorage();
     return newUser;
   },
-
+// locates the user by id, updates the refresh token and sets revoked_at to null, then saves the changes to storage.
   updateRefreshToken(id, refreshToken) {
     loadFromStorage();
     const user = users.find((u) => u.id === Number(id));
@@ -100,7 +105,7 @@ const UserModel = {
     }
     return null;
   },
-
+// finds user attached to the rfresh token, sets the refresh token to null, sets rvoked to the current timestamp, and saves the changes to storage.
   revokeToken(refreshToken) {
     loadFromStorage();
     const user = users.find((u) => u.refresh_token === refreshToken);
