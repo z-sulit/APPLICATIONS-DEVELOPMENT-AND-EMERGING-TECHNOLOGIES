@@ -1,5 +1,6 @@
-const PostModel = require('../models/post.model');
+const PostModel = require('../models/post.model'); //import PostModel
 
+// extracts input and prevents users from submitting empty posts or posts
 exports.getAllPosts = (req, res, next) => {
   try {
     const posts = PostModel.findAll();
